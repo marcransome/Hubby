@@ -5,6 +5,7 @@ Hubby lives in your menu bar and notifies you when the little fix-it elves at [G
 Hubby makes use of the following open source libraries and frameworks:
 * [JSONKit](https://github.com/johnezang/JSONKit) by John Engelhart
 * [Sparkle](https://github.com/andymatuschak/Sparkle) by Andy Matuschak
+* [CocoaLumberjack](https://github.com/robbiehanson/CocoaLumberjack) by Robbie Hanson
 
 Many thanks to their authors for their great work.
 
