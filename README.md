@@ -1,6 +1,11 @@
 ##Hubby
 Hubby lives in your menu bar and notifies you when the little fix-it elves at [GitHub](https://www.github.com) are busy fixing something that [broke](https://status.github.com/).  Be it a major meltdown, or a minor hiccup, Hubby will politely inform you that Something-Is-Going-On™.  Hubby won't make the world a better place, but it will keep you in the know.
 
+##Acknowledgements
+Hubby makes use of the following open source libraries and frameworks:
+* [JSONKit](https://github.com/johnezang/JSONKit) by John Engelhart
+* [Sparkle](https://github.com/andymatuschak/Sparkle) by Andy Matuschak
+
 ##License
 Hubby is provided under the terms of the [GNU General Public License](http://www.gnu.org/licenses/gpl.html).
 
