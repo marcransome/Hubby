@@ -6,6 +6,8 @@ Hubby makes use of the following open source libraries and frameworks:
 * [JSONKit](https://github.com/johnezang/JSONKit) by John Engelhart
 * [Sparkle](https://github.com/andymatuschak/Sparkle) by Andy Matuschak
 
+Many thanks to their authors for their great work.
+
 ##License
 Hubby is free software and you are welcome to modify or redistribute it under certain conditions. See the [GNU General Public License](http://www.gnu.org/licenses/gpl.html) for more details.
 
