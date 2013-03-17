@@ -8,5 +8,7 @@
 	<integer>5</integer>
 	<key>DefaultPreferenceViewController</key>
 	<string>MRGeneralPreferencesViewController</string>
+	<key>RemoveNotificationsOnClick</key>
+	<false/>
 </dict>
 </plist>

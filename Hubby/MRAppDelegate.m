@@ -230,6 +230,10 @@ enum {
 -(void)userNotificationCenter:(NSUserNotificationCenter *)center didActivateNotification:(NSUserNotification *)notification
 {
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://status.github.com"]];
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"RemoveNotificationsOnClick"]) {
+        [[NSUserNotificationCenter defaultUserNotificationCenter] removeDeliveredNotification:notification];
+    }
 }
 
 @end
