@@ -9,6 +9,6 @@
 	<key>DefaultPreferenceViewController</key>
 	<string>MRGeneralPreferencesViewController</string>
 	<key>RemoveNotificationsOnClick</key>
-	<false/>
+	<true/>
 </dict>
 </plist>
