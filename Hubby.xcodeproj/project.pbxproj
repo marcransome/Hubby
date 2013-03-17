@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		192D5A7016F31BAD00E4DF19 /* events.icns in Resources */ = {isa = PBXBuildFile; fileRef = 192D5A6F16F31BAD00E4DF19 /* events.icns */; };
+		192D5A7A16F31C6400E4DF19 /* MREventsPreferencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 192D5A7816F31C6400E4DF19 /* MREventsPreferencesViewController.m */; };
+		192D5A7B16F31C6400E4DF19 /* MREventsPreferencesView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 192D5A7916F31C6400E4DF19 /* MREventsPreferencesView.xib */; };
+		196B543816F4C3DE000DA841 /* Acknowledgements.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 196B543716F4C3DE000DA841 /* Acknowledgements.rtf */; };
+		196B543B16F520FE000DA841 /* menu_highlight.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 196B543A16F520FE000DA841 /* menu_highlight.tiff */; };
 		19A4BDBF16F2639400E8BE63 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19A4BDBE16F2639400E8BE63 /* Cocoa.framework */; };
 		19A4BDC916F2639400E8BE63 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 19A4BDC716F2639400E8BE63 /* InfoPlist.strings */; };
 		19A4BDCB16F2639400E8BE63 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 19A4BDCA16F2639400E8BE63 /* main.m */; };
@@ -23,10 +28,32 @@
 		19A4BE0016F289E800E8BE63 /* Defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 19A4BDFF16F289E800E8BE63 /* Defaults.plist */; };
 		19A4BE0416F29D4A00E8BE63 /* MRUpdatePreferencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19A4BE0216F29D4A00E8BE63 /* MRUpdatePreferencesViewController.m */; };
 		19A4BE0516F29D4A00E8BE63 /* MRUpdatePreferencesView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19A4BE0316F29D4A00E8BE63 /* MRUpdatePreferencesView.xib */; };
+		19C145A816F3DC30007AEC14 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19C145A716F3DC30007AEC14 /* Sparkle.framework */; };
+		19C145AA16F3DC8D007AEC14 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 19C145A716F3DC30007AEC14 /* Sparkle.framework */; };
+		19C145AC16F3E689007AEC14 /* hubby.pem in Resources */ = {isa = PBXBuildFile; fileRef = 19C145AB16F3E689007AEC14 /* hubby.pem */; };
 		409CB9C7B7A6461ABFC79F1E /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D389EE93785D4260AAE2C40B /* libPods.a */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		19C145A916F3DC61007AEC14 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				19C145AA16F3DC8D007AEC14 /* Sparkle.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		192D5A6F16F31BAD00E4DF19 /* events.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = events.icns; path = "Resources/Toolbar Icons/events.icns"; sourceTree = "<group>"; };
+		192D5A7716F31C6400E4DF19 /* MREventsPreferencesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MREventsPreferencesViewController.h; path = Interface/Preferences/Views/Events/MREventsPreferencesViewController.h; sourceTree = "<group>"; };
+		192D5A7816F31C6400E4DF19 /* MREventsPreferencesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MREventsPreferencesViewController.m; path = Interface/Preferences/Views/Events/MREventsPreferencesViewController.m; sourceTree = "<group>"; };
+		192D5A7916F31C6400E4DF19 /* MREventsPreferencesView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MREventsPreferencesView.xib; path = Interface/Preferences/Views/Events/MREventsPreferencesView.xib; sourceTree = "<group>"; };
+		196B543716F4C3DE000DA841 /* Acknowledgements.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Acknowledgements.rtf; sourceTree = "<group>"; };
+		196B543A16F520FE000DA841 /* menu_highlight.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = menu_highlight.tiff; sourceTree = "<group>"; };
 		19A4BDBB16F2639400E8BE63 /* Hubby.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hubby.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		19A4BDBE16F2639400E8BE63 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		19A4BDC116F2639400E8BE63 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -44,7 +71,7 @@
 		19A4BDE816F2841600E8BE63 /* general.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = general.icns; path = "Resources/Toolbar Icons/general.icns"; sourceTree = "<group>"; };
 		19A4BDE916F2841600E8BE63 /* update.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = update.icns; path = "Resources/Toolbar Icons/update.icns"; sourceTree = "<group>"; };
 		19A4BDF016F2866F00E8BE63 /* MRPreferencesWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MRPreferencesWindowController.h; path = Interface/Preferences/MRPreferencesWindowController.h; sourceTree = "<group>"; };
-		19A4BDF116F2866F00E8BE63 /* MRPreferencesWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MRPreferencesWindowController.m; path = Interface/Preferences/MRPreferencesWindowController.m; sourceTree = "<group>"; };
+		19A4BDF116F2866F00E8BE63 /* MRPreferencesWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = MRPreferencesWindowController.m; path = Interface/Preferences/MRPreferencesWindowController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		19A4BDF216F2866F00E8BE63 /* MRPreferencesWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MRPreferencesWindow.xib; path = Interface/Preferences/MRPreferencesWindow.xib; sourceTree = "<group>"; };
 		19A4BDF516F2869900E8BE63 /* MRGeneralPreferencesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MRGeneralPreferencesViewController.h; path = Interface/Preferences/Views/General/MRGeneralPreferencesViewController.h; sourceTree = "<group>"; };
 		19A4BDF616F2869900E8BE63 /* MRGeneralPreferencesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MRGeneralPreferencesViewController.m; path = Interface/Preferences/Views/General/MRGeneralPreferencesViewController.m; sourceTree = "<group>"; };
@@ -53,6 +80,8 @@
 		19A4BE0116F29D4A00E8BE63 /* MRUpdatePreferencesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MRUpdatePreferencesViewController.h; path = Interface/Preferences/Views/Update/MRUpdatePreferencesViewController.h; sourceTree = "<group>"; };
 		19A4BE0216F29D4A00E8BE63 /* MRUpdatePreferencesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MRUpdatePreferencesViewController.m; path = Interface/Preferences/Views/Update/MRUpdatePreferencesViewController.m; sourceTree = "<group>"; };
 		19A4BE0316F29D4A00E8BE63 /* MRUpdatePreferencesView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MRUpdatePreferencesView.xib; path = Interface/Preferences/Views/Update/MRUpdatePreferencesView.xib; sourceTree = "<group>"; };
+		19C145A716F3DC30007AEC14 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
+		19C145AB16F3E689007AEC14 /* hubby.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = hubby.pem; path = Resources/hubby.pem; sourceTree = "<group>"; };
 		1C1F9D064C5741D69CD6EF51 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		D389EE93785D4260AAE2C40B /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -64,17 +93,30 @@
 			files = (
 				19A4BDBF16F2639400E8BE63 /* Cocoa.framework in Frameworks */,
 				409CB9C7B7A6461ABFC79F1E /* libPods.a in Frameworks */,
+				19C145A816F3DC30007AEC14 /* Sparkle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		192D5A7116F31C0500E4DF19 /* Events */ = {
+			isa = PBXGroup;
+			children = (
+				192D5A7716F31C6400E4DF19 /* MREventsPreferencesViewController.h */,
+				192D5A7816F31C6400E4DF19 /* MREventsPreferencesViewController.m */,
+				192D5A7916F31C6400E4DF19 /* MREventsPreferencesView.xib */,
+			);
+			name = Events;
+			sourceTree = "<group>";
+		};
 		196092EB16F2A4E9002F8C8D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
 				196092EC16F2A4EE002F8C8D /* Toolbar Icons */,
 				196092ED16F2A4FD002F8C8D /* Status Images */,
+				19C145AD16F3E69A007AEC14 /* Sparkle Key */,
+				19C145AE16F3FEEC007AEC14 /* License */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -83,6 +125,7 @@
 			isa = PBXGroup;
 			children = (
 				19A4BDE816F2841600E8BE63 /* general.icns */,
+				192D5A6F16F31BAD00E4DF19 /* events.icns */,
 				19A4BDE916F2841600E8BE63 /* update.icns */,
 			);
 			name = "Toolbar Icons";
@@ -92,6 +135,7 @@
 			isa = PBXGroup;
 			children = (
 				19A4BDDB16F2654D00E8BE63 /* good.tiff */,
+				196B543A16F520FE000DA841 /* menu_highlight.tiff */,
 			);
 			name = "Status Images";
 			sourceTree = "<group>";
@@ -127,6 +171,7 @@
 		19A4BDC016F2639400E8BE63 /* Other Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				19C145A716F3DC30007AEC14 /* Sparkle.framework */,
 				19A4BDC116F2639400E8BE63 /* AppKit.framework */,
 				19A4BDC216F2639400E8BE63 /* CoreData.framework */,
 				19A4BDC316F2639400E8BE63 /* Foundation.framework */,
@@ -175,6 +220,7 @@
 			isa = PBXGroup;
 			children = (
 				19A4BDEE16F285E500E8BE63 /* General */,
+				192D5A7116F31C0500E4DF19 /* Events */,
 				19A4BDEF16F285EC00E8BE63 /* Update */,
 			);
 			name = Views;
@@ -200,6 +246,22 @@
 			name = Update;
 			sourceTree = "<group>";
 		};
+		19C145AD16F3E69A007AEC14 /* Sparkle Key */ = {
+			isa = PBXGroup;
+			children = (
+				19C145AB16F3E689007AEC14 /* hubby.pem */,
+			);
+			name = "Sparkle Key";
+			sourceTree = "<group>";
+		};
+		19C145AE16F3FEEC007AEC14 /* License */ = {
+			isa = PBXGroup;
+			children = (
+				196B543716F4C3DE000DA841 /* Acknowledgements.rtf */,
+			);
+			name = License;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -211,6 +273,7 @@
 				19A4BDB816F2639400E8BE63 /* Frameworks */,
 				19A4BDB916F2639400E8BE63 /* Resources */,
 				3C5343C5A21746FFAEBFD935 /* Copy Pods Resources */,
+				19C145A916F3DC61007AEC14 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -263,6 +326,11 @@
 				19A4BDF916F2869900E8BE63 /* MRGeneralPreferencesView.xib in Resources */,
 				19A4BE0016F289E800E8BE63 /* Defaults.plist in Resources */,
 				19A4BE0516F29D4A00E8BE63 /* MRUpdatePreferencesView.xib in Resources */,
+				192D5A7016F31BAD00E4DF19 /* events.icns in Resources */,
+				192D5A7B16F31C6400E4DF19 /* MREventsPreferencesView.xib in Resources */,
+				19C145AC16F3E689007AEC14 /* hubby.pem in Resources */,
+				196B543816F4C3DE000DA841 /* Acknowledgements.rtf in Resources */,
+				196B543B16F520FE000DA841 /* menu_highlight.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -295,6 +363,7 @@
 				19A4BDF316F2866F00E8BE63 /* MRPreferencesWindowController.m in Sources */,
 				19A4BDF816F2869900E8BE63 /* MRGeneralPreferencesViewController.m in Sources */,
 				19A4BE0416F29D4A00E8BE63 /* MRUpdatePreferencesViewController.m in Sources */,
+				192D5A7A16F31C6400E4DF19 /* MREventsPreferencesViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -392,6 +461,10 @@
 			baseConfigurationReference = 1C1F9D064C5741D69CD6EF51 /* Pods.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Hubby/Hubby-Prefix.pch";
 				INFOPLIST_FILE = "Hubby/Hubby-Info.plist";
@@ -406,6 +479,10 @@
 			baseConfigurationReference = 1C1F9D064C5741D69CD6EF51 /* Pods.xcconfig */;
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Hubby/Hubby-Prefix.pch";
 				INFOPLIST_FILE = "Hubby/Hubby-Info.plist";

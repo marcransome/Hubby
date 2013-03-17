@@ -23,11 +23,29 @@
 #import "MRAppDelegate.h"
 #import "MRPreferencesWindowController.h"
 #import <JSONKit.h>
+#import <DDLog.h>
+#import <DDASLLogger.h>
+#import <DDTTYLogger.h>
+
+static int ddLogLevel = LOG_LEVEL_VERBOSE;
+
+enum {
+    MRMajorAndMinorNotifications = 0,
+    MRMajorNotifications = 1,
+    MRMinorNotifications = 2
+};
 
 @implementation MRAppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+    [DDLog addLogger:[DDASLLogger sharedInstance]];
+    [DDLog addLogger:[DDTTYLogger sharedInstance]];
+    
+    NSNumber *logLevel = [[NSUserDefaults standardUserDefaults] objectForKey:@"prefsLogLevel"];
+    if (logLevel)
+        ddLogLevel = [logLevel intValue];
+    
     // register sane preference defaults from plist file
     NSString *defaultsPath = [[NSBundle mainBundle] pathForResource:@"Defaults" ofType:@"plist"];
     NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:defaultsPath];
@@ -42,22 +60,33 @@
     // menu item setup
     _hubbyMenuItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSSquareStatusItemLength];
     
-    NSImage *statusImage = [NSImage imageNamed:@"good.tiff"];
-    [statusImage setSize:NSMakeSize(18, 18)];
+    NSImage *menuItemImage = [NSImage imageNamed:@"menu_icon.tiff"];
+    [menuItemImage setSize:NSMakeSize(18, 18)];
     
-    [_hubbyMenuItem setImage:statusImage];
+    NSImage *menuItemHighlight = [NSImage imageNamed:@"menu_highlight.tiff"];
+    [menuItemHighlight setSize:NSMakeSize(18, 18)];
+    
+    [_hubbyMenuItem setImage:menuItemImage];
+    [_hubbyMenuItem setAlternateImage:menuItemHighlight];
     [_hubbyMenuItem setHighlightMode:YES];
     [_hubbyMenuItem setMenu:_hubbyMenu];
     
     _waitingOnLastRequest = NO;
 
+    // observer for repeat interval preference
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                         selector:@selector(adjustTimerInterval:)
+                                             name:@"RepeatIntervalChanged"
+                                           object:nil];
+    
     // refresh timer setup
-    _statusTimer = [NSTimer scheduledTimerWithTimeInterval:(60.0)
-                                                    target:self
-                                                  selector:@selector(updateHubby:)
-                                                  userInfo:nil
-                                                   repeats:YES];
-                                                    
+    NSTimeInterval repeatIntervalInSeconds = [[NSUserDefaults standardUserDefaults] integerForKey:@"RepeatInterval"] * 60.0;
+    _statusTimer = [NSTimer scheduledTimerWithTimeInterval:(repeatIntervalInSeconds <= 60.0 ? 60.0 : repeatIntervalInSeconds)
+                                                target:self
+                                              selector:@selector(updateHubby:)
+                                              userInfo:nil
+                                               repeats:YES];
+
     [_statusTimer fire];
 }
 
@@ -81,14 +110,15 @@
     NSDictionary *apiResultsDictionary = [apiJsonData objectFromJSONData];
     
     NSURL *statusUrl = [NSURL URLWithString:[apiResultsDictionary objectForKey:@"status_url"]];
+    NSURL *lastMessageUrl = [NSURL URLWithString:[apiResultsDictionary objectForKey:@"last_message_url"]];
     
-    // json request for status code
+    // json request for status
     NSURLRequest *statusRequest = [NSURLRequest requestWithURL:statusUrl];
     NSError *statusError;
     NSData *statusJsonData = [NSURLConnection sendSynchronousRequest:statusRequest returningResponse:nil error:&statusError];
     NSDictionary *statusResultsDictionary = [statusJsonData objectFromJSONData];
     
-    // parse status from json reponse
+    // parse status
     NSString *lastCheckedString = [statusResultsDictionary objectForKey:@"last_updated"];
     NSUInteger timeStart = [lastCheckedString rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"T"]].location + 1;
     NSUInteger timeLength = [lastCheckedString length] - timeStart - 1;
@@ -97,9 +127,20 @@
     
     NSString *statusString = [statusResultsDictionary objectForKey:@"status"];
     
+    // json request for last message
+    NSURLRequest *lastMessageRequest = [NSURLRequest requestWithURL:lastMessageUrl];
+    NSError *lastMessageError;
+    NSData *lastMessageJsonData = [NSURLConnection sendSynchronousRequest:lastMessageRequest returningResponse:nil error:&lastMessageError];
+    NSDictionary *lastMessageResultsDictionary = [lastMessageJsonData objectFromJSONData];
+    
+    // parse last message
+    NSString *lastMessageString = [lastMessageResultsDictionary objectForKey:@"body"];
+    
+    // assemble desired results
     NSMutableDictionary *pollResultsDictionary = [NSMutableDictionary dictionary];
     [pollResultsDictionary setObject:timeString forKey:@"time"];
     [pollResultsDictionary setObject:statusString forKey:@"status"];
+    [pollResultsDictionary setObject:lastMessageString forKey:@"message"];
     
     [self performSelectorOnMainThread:@selector(pollFinished:) withObject:pollResultsDictionary waitUntilDone:NO];
 }
@@ -109,30 +150,43 @@
     [_hubbyStatusItem setTitle:[NSString stringWithFormat:@"Last check: %@", [resultsDictionary objectForKey:@"time"]]];
     
     NSString *status = [resultsDictionary objectForKey:@"status"];
-
-//    if ([status isEqualToString:@"good"]) {
-//        
-//    }
-//    else if ([status isEqualToString:@"minor"]) {
-//        
-//    }
-//    else if ([status isEqualToString:@"major"]) {
-//
-//    }
+    NSString *message = [resultsDictionary objectForKey:@"message"];
     
     if (!_currentStatus) {
-        NSLog(@"new status recorded");
         _currentStatus = status;
+        DDLogVerbose(@"first status recorded (%@)", status);
     }
     else if (![status isEqualToString:_currentStatus]) {
-        NSLog(@"status change detected");
-        NSUserNotification *notification = [[NSUserNotification alloc] init];
-        [notification setTitle:@"GitHub Status Update"];
-        [notification setInformativeText:@"blah blah blah"];
         
-        [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
+        DDLogVerbose(@"status change detected (%@)", status);
+        
+        NSInteger notificationType = [[NSUserDefaults standardUserDefaults] integerForKey:@"NotificationsFor"];
+        
+        if ([status isEqualToString:@"major"]) {
+            if (notificationType == MRMajorAndMinorNotifications || notificationType == MRMajorNotifications)
+            {
+                NSUserNotification *notification = [[NSUserNotification alloc] init];
+                [notification setTitle:@"GitHub Major Disruption"];
+                [notification setInformativeText:message];
+                [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
+            }
+        }
+        else if ([status isEqualToString:@"minor"]) {
+            if (notificationType == MRMajorAndMinorNotifications || notificationType == MRMinorNotifications)
+            {
+                NSUserNotification *notification = [[NSUserNotification alloc] init];
+                [notification setTitle:@"GitHub Minor Disruption"];
+                [notification setInformativeText:message];
+                [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate:self];
+                [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
+            }
+        }
         
         _currentStatus = status;
+    }
+    else
+    {
+        DDLogVerbose(@"no status change detected");
     }
 
     _waitingOnLastRequest = NO;
@@ -153,6 +207,29 @@
 {
     [NSApp activateIgnoringOtherApps: YES];
     [NSApp orderFrontStandardAboutPanel:nil];
+}
+
+- (void)adjustTimerInterval:(NSNotification *)notification
+{
+    [_statusTimer invalidate];
+    
+    NSInteger repeatIntervalInSeconds = [[NSUserDefaults standardUserDefaults] integerForKey:@"RepeatInterval"] * 60;
+    _statusTimer = [NSTimer scheduledTimerWithTimeInterval:(repeatIntervalInSeconds)
+                                                    target:self
+                                                  selector:@selector(updateHubby:)
+                                                  userInfo:nil
+                                                   repeats:YES];
+    
+    DDLogVerbose(@"adjusted timer interval (%lis)", (long)repeatIntervalInSeconds);
+}
+
+- (IBAction)showAcknowledgements:(id)sender {
+    [[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] pathForResource:@"Acknowledgements" ofType:@"rtf"]];
+}
+
+-(void)userNotificationCenter:(NSUserNotificationCenter *)center didActivateNotification:(NSUserNotification *)notification
+{
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://status.github.com"]];
 }
 
 @end

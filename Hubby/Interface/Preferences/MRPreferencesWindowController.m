@@ -22,22 +22,21 @@
 
 #import "MRPreferencesWindowController.h"
 
-#pragma mark -
 #pragma mark Constants
 
-static NSString* const FBGeneralPreferencesName = @"MRGeneralPreferencesViewController";
-static NSString* const FBUpdatePreferencesName = @"MRUpdatePreferencesViewController";
+static NSString* const MRGeneralPreferencesName = @"MRGeneralPreferencesViewController";
+static NSString* const MREventsPreferencesName = @"MREventsPreferencesViewController";
+static NSString* const MRUpdatePreferencesName = @"MRUpdatePreferencesViewController";
 
-static NSString* const FBGeneralPreferencesIdentifier = @"general";
-static NSString* const FBUpdatePreferencesIdentifier = @"update";
+static NSString* const MRGeneralPreferencesIdentifier = @"general";
+static NSString* const MREventsPreferencesIdentifier = @"events";
+static NSString* const MRUpdatePreferencesIdentifier = @"update";
 
-static NSString* const FBGeneralPreferencesWindowTitle = @"General";
-static NSString* const FBUpdatePreferencesWindowTitle = @"Update";
+static NSString* const MRGeneralPreferencesWindowTitle = @"General";
+static NSString* const MREventsPreferencesWindowTitle = @"Events";
+static NSString* const MRUpdatePreferencesWindowTitle = @"Update";
 
 @implementation MRPreferencesWindowController
-
-#pragma mark -
-#pragma mark Initialisation
 
 - (id)initWithWindow:(NSWindow *)window
 {
@@ -107,16 +106,17 @@ static NSString* const FBUpdatePreferencesWindowTitle = @"Update";
 
 -(void)setInitialPreference:(NSString *)preferenceName
 {
-    
     // construct dictionary of preference names and identifiers
     NSMutableDictionary *preferenceIdentifierDatabase = [NSMutableDictionary dictionary];
-    [preferenceIdentifierDatabase setObject:FBGeneralPreferencesIdentifier forKey:FBGeneralPreferencesName];
-    [preferenceIdentifierDatabase setObject:FBUpdatePreferencesIdentifier forKey:FBUpdatePreferencesName];
+    [preferenceIdentifierDatabase setObject:MRGeneralPreferencesIdentifier forKey:MRGeneralPreferencesName];
+    [preferenceIdentifierDatabase setObject:MREventsPreferencesIdentifier forKey:MREventsPreferencesName];
+    [preferenceIdentifierDatabase setObject:MRUpdatePreferencesIdentifier forKey:MRUpdatePreferencesName];
     
     // construct dictionary of preference names and window titles
     NSMutableDictionary *preferenceWindowTitleDatabase = [NSMutableDictionary dictionary];
-    [preferenceWindowTitleDatabase setObject:FBGeneralPreferencesWindowTitle forKey:FBGeneralPreferencesName];
-    [preferenceWindowTitleDatabase setObject:FBUpdatePreferencesWindowTitle forKey:FBUpdatePreferencesName];
+    [preferenceWindowTitleDatabase setObject:MRGeneralPreferencesWindowTitle forKey:MRGeneralPreferencesName];
+    [preferenceWindowTitleDatabase setObject:MREventsPreferencesWindowTitle forKey:MREventsPreferencesName];
+    [preferenceWindowTitleDatabase setObject:MRUpdatePreferencesWindowTitle forKey:MRUpdatePreferencesName];
     
     // setup initial view controller
     NSViewController *initalViewController;
@@ -164,13 +164,15 @@ static NSString* const FBUpdatePreferencesWindowTitle = @"Update";
 {
     // construct dictionary of preference names and identifiers
     NSMutableDictionary *preferenceControllerDatabase = [NSMutableDictionary dictionary];
-    [preferenceControllerDatabase setObject:FBGeneralPreferencesName forKey:FBGeneralPreferencesIdentifier];
-    [preferenceControllerDatabase setObject:FBUpdatePreferencesName forKey:FBUpdatePreferencesIdentifier];
+    [preferenceControllerDatabase setObject:MRGeneralPreferencesName forKey:MRGeneralPreferencesIdentifier];
+    [preferenceControllerDatabase setObject:MREventsPreferencesName forKey:MREventsPreferencesIdentifier];
+    [preferenceControllerDatabase setObject:MRUpdatePreferencesName forKey:MRUpdatePreferencesIdentifier];
     
     // construct dictionary of preference names and window titles
     NSMutableDictionary *preferenceWindowTitleDatabase = [NSMutableDictionary dictionary];
-    [preferenceWindowTitleDatabase setObject:FBGeneralPreferencesWindowTitle forKey:FBGeneralPreferencesIdentifier];
-    [preferenceWindowTitleDatabase setObject:FBUpdatePreferencesWindowTitle forKey:FBUpdatePreferencesIdentifier];
+    [preferenceWindowTitleDatabase setObject:MRGeneralPreferencesWindowTitle forKey:MRGeneralPreferencesIdentifier];
+    [preferenceWindowTitleDatabase setObject:MREventsPreferencesWindowTitle forKey:MREventsPreferencesIdentifier];
+    [preferenceWindowTitleDatabase setObject:MRUpdatePreferencesWindowTitle forKey:MRUpdatePreferencesIdentifier];
     
     // get preference controller name and window title
     NSString *windowTitle = [preferenceWindowTitleDatabase objectForKey:[sender itemIdentifier]];
@@ -184,7 +186,6 @@ static NSString* const FBUpdatePreferencesWindowTitle = @"Update";
     
     // update shared user defaults so this becomes our default view on next launch
     [[NSUserDefaults standardUserDefaults] setObject:controllerName forKey:@"DefaultPreferenceViewController"];
-    
 }
 
 @end

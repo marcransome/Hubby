@@ -24,7 +24,7 @@
 
 @class MRPreferencesWindowController;
 
-@interface MRAppDelegate : NSObject <NSApplicationDelegate>
+@interface MRAppDelegate : NSObject <NSApplicationDelegate, NSUserNotificationCenterDelegate>
 
 @property (strong) NSStatusItem* hubbyMenuItem;
 @property (weak) IBOutlet NSMenu *hubbyMenu;
@@ -38,9 +38,10 @@
 
 - (void)pollGithub;
 - (void)pollFinished:(NSDictionary *)resultsDictionary;
-- (IBAction)openGitHubStatusPage:(id)sender;
 
+- (IBAction)openGitHubStatusPage:(id)sender;
 - (IBAction)showPreferences:(id)sender;
 - (IBAction)showAbout:(id)sender;
+- (IBAction)showAcknowledgements:(id)sender;
 
 @end
