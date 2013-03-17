@@ -12,13 +12,13 @@
 		192D5A7B16F31C6400E4DF19 /* MREventsPreferencesView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 192D5A7916F31C6400E4DF19 /* MREventsPreferencesView.xib */; };
 		196B543816F4C3DE000DA841 /* Acknowledgements.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 196B543716F4C3DE000DA841 /* Acknowledgements.rtf */; };
 		196B543B16F520FE000DA841 /* menu_highlight.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 196B543A16F520FE000DA841 /* menu_highlight.tiff */; };
+		196B543D16F5EE41000DA841 /* menu_icon.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 196B543C16F5EE41000DA841 /* menu_icon.tiff */; };
 		19A4BDBF16F2639400E8BE63 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19A4BDBE16F2639400E8BE63 /* Cocoa.framework */; };
 		19A4BDC916F2639400E8BE63 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 19A4BDC716F2639400E8BE63 /* InfoPlist.strings */; };
 		19A4BDCB16F2639400E8BE63 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 19A4BDCA16F2639400E8BE63 /* main.m */; };
 		19A4BDCF16F2639400E8BE63 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 19A4BDCD16F2639400E8BE63 /* Credits.rtf */; };
 		19A4BDD216F2639400E8BE63 /* MRAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 19A4BDD116F2639400E8BE63 /* MRAppDelegate.m */; };
 		19A4BDD516F2639400E8BE63 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19A4BDD316F2639400E8BE63 /* MainMenu.xib */; };
-		19A4BDDC16F2654D00E8BE63 /* good.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 19A4BDDB16F2654D00E8BE63 /* good.tiff */; };
 		19A4BDEA16F2841600E8BE63 /* general.icns in Resources */ = {isa = PBXBuildFile; fileRef = 19A4BDE816F2841600E8BE63 /* general.icns */; };
 		19A4BDEB16F2841600E8BE63 /* update.icns in Resources */ = {isa = PBXBuildFile; fileRef = 19A4BDE916F2841600E8BE63 /* update.icns */; };
 		19A4BDF316F2866F00E8BE63 /* MRPreferencesWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19A4BDF116F2866F00E8BE63 /* MRPreferencesWindowController.m */; };
@@ -54,6 +54,7 @@
 		192D5A7916F31C6400E4DF19 /* MREventsPreferencesView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MREventsPreferencesView.xib; path = Interface/Preferences/Views/Events/MREventsPreferencesView.xib; sourceTree = "<group>"; };
 		196B543716F4C3DE000DA841 /* Acknowledgements.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Acknowledgements.rtf; sourceTree = "<group>"; };
 		196B543A16F520FE000DA841 /* menu_highlight.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = menu_highlight.tiff; sourceTree = "<group>"; };
+		196B543C16F5EE41000DA841 /* menu_icon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = menu_icon.tiff; sourceTree = "<group>"; };
 		19A4BDBB16F2639400E8BE63 /* Hubby.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hubby.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		19A4BDBE16F2639400E8BE63 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		19A4BDC116F2639400E8BE63 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -67,7 +68,6 @@
 		19A4BDD016F2639400E8BE63 /* MRAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MRAppDelegate.h; sourceTree = "<group>"; };
 		19A4BDD116F2639400E8BE63 /* MRAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MRAppDelegate.m; sourceTree = "<group>"; };
 		19A4BDD416F2639400E8BE63 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		19A4BDDB16F2654D00E8BE63 /* good.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = good.tiff; sourceTree = "<group>"; };
 		19A4BDE816F2841600E8BE63 /* general.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = general.icns; path = "Resources/Toolbar Icons/general.icns"; sourceTree = "<group>"; };
 		19A4BDE916F2841600E8BE63 /* update.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = update.icns; path = "Resources/Toolbar Icons/update.icns"; sourceTree = "<group>"; };
 		19A4BDF016F2866F00E8BE63 /* MRPreferencesWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MRPreferencesWindowController.h; path = Interface/Preferences/MRPreferencesWindowController.h; sourceTree = "<group>"; };
@@ -134,7 +134,7 @@
 		196092ED16F2A4FD002F8C8D /* Status Images */ = {
 			isa = PBXGroup;
 			children = (
-				19A4BDDB16F2654D00E8BE63 /* good.tiff */,
+				196B543C16F5EE41000DA841 /* menu_icon.tiff */,
 				196B543A16F520FE000DA841 /* menu_highlight.tiff */,
 			);
 			name = "Status Images";
@@ -319,7 +319,6 @@
 				19A4BDC916F2639400E8BE63 /* InfoPlist.strings in Resources */,
 				19A4BDCF16F2639400E8BE63 /* Credits.rtf in Resources */,
 				19A4BDD516F2639400E8BE63 /* MainMenu.xib in Resources */,
-				19A4BDDC16F2654D00E8BE63 /* good.tiff in Resources */,
 				19A4BDEA16F2841600E8BE63 /* general.icns in Resources */,
 				19A4BDEB16F2841600E8BE63 /* update.icns in Resources */,
 				19A4BDF416F2866F00E8BE63 /* MRPreferencesWindow.xib in Resources */,
@@ -331,6 +330,7 @@
 				19C145AC16F3E689007AEC14 /* hubby.pem in Resources */,
 				196B543816F4C3DE000DA841 /* Acknowledgements.rtf in Resources */,
 				196B543B16F520FE000DA841 /* menu_highlight.tiff in Resources */,
+				196B543D16F5EE41000DA841 /* menu_icon.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
