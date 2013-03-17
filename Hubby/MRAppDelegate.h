@@ -38,6 +38,7 @@
 
 - (void)pollGithub;
 - (void)pollFinished:(NSDictionary *)resultsDictionary;
+- (void)pollErrored;
 
 - (IBAction)openGitHubStatusPage:(id)sender;
 - (IBAction)showPreferences:(id)sender;

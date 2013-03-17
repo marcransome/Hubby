@@ -81,6 +81,9 @@ enum {
     
     // refresh timer setup
     NSTimeInterval repeatIntervalInSeconds = [[NSUserDefaults standardUserDefaults] integerForKey:@"RepeatInterval"] * 60.0;
+    
+    DDLogVerbose(@"repeat interval on startup is %.2fs", repeatIntervalInSeconds);
+    
     _statusTimer = [NSTimer scheduledTimerWithTimeInterval:(repeatIntervalInSeconds <= 60.0 ? 60.0 : repeatIntervalInSeconds)
                                                 target:self
                                               selector:@selector(updateHubby:)
@@ -103,42 +106,95 @@ enum {
     // json request for status api
     NSURL *apiUrl = [NSURL URLWithString:@"https://status.github.com/api.json"];
     NSURLRequest *apiRequest = [NSURLRequest requestWithURL:apiUrl];
-    NSError *apiError;
+    NSError *apiError = nil;
+    NSHTTPURLResponse *apiResponse = nil;
+    NSData* apiJsonData = [NSURLConnection sendSynchronousRequest:apiRequest returningResponse:&apiResponse error:&apiError];
     
-    NSData* apiJsonData = [NSURLConnection sendSynchronousRequest:apiRequest returningResponse:nil error:&apiError];
+    if (apiJsonData == nil || [apiResponse statusCode] != 200)
+    {
+        if (apiError)
+            DDLogError(@"error for api request: %@", [apiError localizedDescription]);
+        else
+            DDLogError(@"no data received or http error for api request (status code is %li)", [apiResponse statusCode]);
+        
+        [self performSelectorOnMainThread:@selector(pollErrored) withObject:nil waitUntilDone:NO];
+        
+        return;
+    }
     
     NSDictionary *apiResultsDictionary = [apiJsonData objectFromJSONData];
-    
     NSURL *statusUrl = [NSURL URLWithString:[apiResultsDictionary objectForKey:@"status_url"]];
     NSURL *lastMessageUrl = [NSURL URLWithString:[apiResultsDictionary objectForKey:@"last_message_url"]];
+        
+    if (apiResultsDictionary == nil || statusUrl == nil || lastMessageUrl == nil) {
+        DDLogError(@"malformed json response");
+        
+        [self performSelectorOnMainThread:@selector(pollErrored) withObject:nil waitUntilDone:NO];
+        
+        return;
+    }
     
     // json request for status
     NSURLRequest *statusRequest = [NSURLRequest requestWithURL:statusUrl];
-    NSError *statusError;
-    NSData *statusJsonData = [NSURLConnection sendSynchronousRequest:statusRequest returningResponse:nil error:&statusError];
+    NSError *statusError = nil;
+    NSHTTPURLResponse *statusResponse = nil;
+    NSData *statusJsonData = [NSURLConnection sendSynchronousRequest:statusRequest returningResponse:&statusResponse error:&statusError];
+    
+    if (statusJsonData == nil || [statusResponse statusCode] != 200)
+    {
+        if (statusError)
+            DDLogError(@"error for status request: %@", [statusError localizedDescription]);
+        else
+            DDLogError(@"no data received or http error for status request (status code is %li)", [statusResponse statusCode]);
+        
+        [self performSelectorOnMainThread:@selector(pollErrored) withObject:nil waitUntilDone:NO];
+        
+        return;
+    }
+    
     NSDictionary *statusResultsDictionary = [statusJsonData objectFromJSONData];
     
-    // parse status
-    NSString *lastCheckedString = [statusResultsDictionary objectForKey:@"last_updated"];
-    NSUInteger timeStart = [lastCheckedString rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"T"]].location + 1;
-    NSUInteger timeLength = [lastCheckedString length] - timeStart - 1;
-    NSRange timeRange = NSMakeRange(timeStart, timeLength);
-    NSString *timeString = [lastCheckedString substringWithRange:timeRange];
+    if (statusResultsDictionary == nil) {
+        DDLogError(@"malformed json response for status request");
+        
+        [self performSelectorOnMainThread:@selector(pollErrored) withObject:nil waitUntilDone:NO];
+        
+        return;
+    }
     
+    // parse status
     NSString *statusString = [statusResultsDictionary objectForKey:@"status"];
     
     // json request for last message
     NSURLRequest *lastMessageRequest = [NSURLRequest requestWithURL:lastMessageUrl];
-    NSError *lastMessageError;
-    NSData *lastMessageJsonData = [NSURLConnection sendSynchronousRequest:lastMessageRequest returningResponse:nil error:&lastMessageError];
+    NSError *lastMessageError = nil;
+    NSHTTPURLResponse *lastMessageResponse = nil;
+    NSData *lastMessageJsonData = [NSURLConnection sendSynchronousRequest:lastMessageRequest returningResponse:&lastMessageResponse error:&lastMessageError];
+    
+    // error checks
+    if (lastMessageJsonData == nil || [lastMessageResponse statusCode] != 200)
+    {
+        if (lastMessageError)
+            DDLogError(@"error for last message request: %@", [lastMessageError localizedDescription]);
+        else
+            DDLogError(@"no data received or http error for last message request (status code is %li)", [lastMessageResponse statusCode]);
+        
+        [self performSelectorOnMainThread:@selector(pollErrored) withObject:nil waitUntilDone:NO];
+        
+        return;
+    }
+    
     NSDictionary *lastMessageResultsDictionary = [lastMessageJsonData objectFromJSONData];
     
-    // parse last message
+    // parse last message and record time of check
     NSString *lastMessageString = [lastMessageResultsDictionary objectForKey:@"body"];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"HH:mm:ss"];
+    NSString *currentTime = [dateFormatter stringFromDate:[NSDate date]];
     
     // assemble desired results
     NSMutableDictionary *pollResultsDictionary = [NSMutableDictionary dictionary];
-    [pollResultsDictionary setObject:timeString forKey:@"time"];
+    [pollResultsDictionary setObject:currentTime forKey:@"time"];
     [pollResultsDictionary setObject:statusString forKey:@"status"];
     [pollResultsDictionary setObject:lastMessageString forKey:@"message"];
     
@@ -189,6 +245,13 @@ enum {
         DDLogVerbose(@"no status change detected");
     }
 
+    _waitingOnLastRequest = NO;
+}
+
+- (void)pollErrored
+{
+    [_hubbyStatusItem setTitle:[NSString stringWithFormat:@"Last check: error occured"]];
+    
     _waitingOnLastRequest = NO;
 }
 
