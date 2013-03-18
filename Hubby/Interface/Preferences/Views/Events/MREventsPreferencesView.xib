@@ -116,7 +116,7 @@
 						<object class="NSTextFieldCell" key="NSCell" id="976178440">
 							<int key="NSCellFlags">68157504</int>
 							<int key="NSCellFlags2">272630784</int>
-							<string key="NSContents">Miscellaenous:</string>
+							<string key="NSContents">Miscellaneous:</string>
 							<reference key="NSSupport" ref="345376876"/>
 							<string key="NSCellIdentifier">_NS:1535</string>
 							<reference key="NSControlView" ref="240169446"/>
