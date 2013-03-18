@@ -218,6 +218,15 @@ enum {
         
         NSInteger notificationType = [[NSUserDefaults standardUserDefaults] integerForKey:@"NotificationsFor"];
         
+        if ([status isEqualToString:@"good"])
+        {
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ServiceRestoredNotification"]) {
+                NSUserNotification *notification = [[NSUserNotification alloc] init];
+                [notification setTitle:@"GitHub Service Restored"];
+                [notification setInformativeText:message];
+                [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
+            }
+        }
         if ([status isEqualToString:@"major"]) {
             if (notificationType == MRMajorAndMinorNotifications || notificationType == MRMajorNotifications)
             {

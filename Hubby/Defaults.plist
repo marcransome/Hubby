@@ -8,6 +8,8 @@
 	<integer>5</integer>
 	<key>DefaultPreferenceViewController</key>
 	<string>MRGeneralPreferencesViewController</string>
+	<key>ServiceRestoredNotification</key>
+	<true/>
 	<key>RemoveNotificationsOnClick</key>
 	<true/>
 </dict>
