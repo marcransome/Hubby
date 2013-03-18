@@ -13,6 +13,8 @@
 		196B543816F4C3DE000DA841 /* Acknowledgements.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 196B543716F4C3DE000DA841 /* Acknowledgements.rtf */; };
 		196B543B16F520FE000DA841 /* menu_highlight.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 196B543A16F520FE000DA841 /* menu_highlight.tiff */; };
 		196B543D16F5EE41000DA841 /* menu_icon.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 196B543C16F5EE41000DA841 /* menu_icon.tiff */; };
+		196B544216F71277000DA841 /* MRAccountPreferencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 196B544016F71277000DA841 /* MRAccountPreferencesViewController.m */; };
+		196B544316F71277000DA841 /* MRAccountPreferencesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 196B544116F71277000DA841 /* MRAccountPreferencesViewController.xib */; };
 		19A4BDBF16F2639400E8BE63 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19A4BDBE16F2639400E8BE63 /* Cocoa.framework */; };
 		19A4BDC916F2639400E8BE63 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 19A4BDC716F2639400E8BE63 /* InfoPlist.strings */; };
 		19A4BDCB16F2639400E8BE63 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 19A4BDCA16F2639400E8BE63 /* main.m */; };
@@ -55,6 +57,9 @@
 		196B543716F4C3DE000DA841 /* Acknowledgements.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Acknowledgements.rtf; sourceTree = "<group>"; };
 		196B543A16F520FE000DA841 /* menu_highlight.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = menu_highlight.tiff; sourceTree = "<group>"; };
 		196B543C16F5EE41000DA841 /* menu_icon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = menu_icon.tiff; sourceTree = "<group>"; };
+		196B543F16F71277000DA841 /* MRAccountPreferencesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MRAccountPreferencesViewController.h; path = Interface/Preferences/Views/Account/MRAccountPreferencesViewController.h; sourceTree = "<group>"; };
+		196B544016F71277000DA841 /* MRAccountPreferencesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MRAccountPreferencesViewController.m; path = Interface/Preferences/Views/Account/MRAccountPreferencesViewController.m; sourceTree = "<group>"; };
+		196B544116F71277000DA841 /* MRAccountPreferencesViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MRAccountPreferencesViewController.xib; path = Interface/Preferences/Views/Account/MRAccountPreferencesViewController.xib; sourceTree = "<group>"; };
 		19A4BDBB16F2639400E8BE63 /* Hubby.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hubby.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		19A4BDBE16F2639400E8BE63 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		19A4BDC116F2639400E8BE63 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -140,6 +145,16 @@
 			name = "Status Images";
 			sourceTree = "<group>";
 		};
+		196B543E16F71245000DA841 /* Account */ = {
+			isa = PBXGroup;
+			children = (
+				196B543F16F71277000DA841 /* MRAccountPreferencesViewController.h */,
+				196B544016F71277000DA841 /* MRAccountPreferencesViewController.m */,
+				196B544116F71277000DA841 /* MRAccountPreferencesViewController.xib */,
+			);
+			name = Account;
+			sourceTree = "<group>";
+		};
 		19A4BDB216F2639400E8BE63 = {
 			isa = PBXGroup;
 			children = (
@@ -220,6 +235,7 @@
 			isa = PBXGroup;
 			children = (
 				19A4BDEE16F285E500E8BE63 /* General */,
+				196B543E16F71245000DA841 /* Account */,
 				192D5A7116F31C0500E4DF19 /* Events */,
 				19A4BDEF16F285EC00E8BE63 /* Update */,
 			);
@@ -331,6 +347,7 @@
 				196B543816F4C3DE000DA841 /* Acknowledgements.rtf in Resources */,
 				196B543B16F520FE000DA841 /* menu_highlight.tiff in Resources */,
 				196B543D16F5EE41000DA841 /* menu_icon.tiff in Resources */,
+				196B544316F71277000DA841 /* MRAccountPreferencesViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -364,6 +381,7 @@
 				19A4BDF816F2869900E8BE63 /* MRGeneralPreferencesViewController.m in Sources */,
 				19A4BE0416F29D4A00E8BE63 /* MRUpdatePreferencesViewController.m in Sources */,
 				192D5A7A16F31C6400E4DF19 /* MREventsPreferencesViewController.m in Sources */,
+				196B544216F71277000DA841 /* MRAccountPreferencesViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

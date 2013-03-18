@@ -25,14 +25,17 @@
 #pragma mark Constants
 
 static NSString* const MRGeneralPreferencesName = @"MRGeneralPreferencesViewController";
+static NSString* const MRAccountPreferencesName = @"MRAccountPreferencesViewController";
 static NSString* const MREventsPreferencesName = @"MREventsPreferencesViewController";
 static NSString* const MRUpdatePreferencesName = @"MRUpdatePreferencesViewController";
 
 static NSString* const MRGeneralPreferencesIdentifier = @"general";
+static NSString* const MRAccountPreferencesIdentifier = @"account";
 static NSString* const MREventsPreferencesIdentifier = @"events";
 static NSString* const MRUpdatePreferencesIdentifier = @"update";
 
 static NSString* const MRGeneralPreferencesWindowTitle = @"General";
+static NSString* const MRAccountPreferencesWindowTitle = @"Account";
 static NSString* const MREventsPreferencesWindowTitle = @"Events";
 static NSString* const MRUpdatePreferencesWindowTitle = @"Update";
 
@@ -109,12 +112,14 @@ static NSString* const MRUpdatePreferencesWindowTitle = @"Update";
     // construct dictionary of preference names and identifiers
     NSMutableDictionary *preferenceIdentifierDatabase = [NSMutableDictionary dictionary];
     [preferenceIdentifierDatabase setObject:MRGeneralPreferencesIdentifier forKey:MRGeneralPreferencesName];
+    [preferenceIdentifierDatabase setObject:MRAccountPreferencesIdentifier forKey:MRAccountPreferencesName];
     [preferenceIdentifierDatabase setObject:MREventsPreferencesIdentifier forKey:MREventsPreferencesName];
     [preferenceIdentifierDatabase setObject:MRUpdatePreferencesIdentifier forKey:MRUpdatePreferencesName];
     
     // construct dictionary of preference names and window titles
     NSMutableDictionary *preferenceWindowTitleDatabase = [NSMutableDictionary dictionary];
     [preferenceWindowTitleDatabase setObject:MRGeneralPreferencesWindowTitle forKey:MRGeneralPreferencesName];
+    [preferenceWindowTitleDatabase setObject:MRAccountPreferencesWindowTitle forKey:MRAccountPreferencesName];
     [preferenceWindowTitleDatabase setObject:MREventsPreferencesWindowTitle forKey:MREventsPreferencesName];
     [preferenceWindowTitleDatabase setObject:MRUpdatePreferencesWindowTitle forKey:MRUpdatePreferencesName];
     
@@ -165,12 +170,14 @@ static NSString* const MRUpdatePreferencesWindowTitle = @"Update";
     // construct dictionary of preference names and identifiers
     NSMutableDictionary *preferenceControllerDatabase = [NSMutableDictionary dictionary];
     [preferenceControllerDatabase setObject:MRGeneralPreferencesName forKey:MRGeneralPreferencesIdentifier];
+    [preferenceControllerDatabase setObject:MRAccountPreferencesName forKey:MRAccountPreferencesIdentifier];
     [preferenceControllerDatabase setObject:MREventsPreferencesName forKey:MREventsPreferencesIdentifier];
     [preferenceControllerDatabase setObject:MRUpdatePreferencesName forKey:MRUpdatePreferencesIdentifier];
     
     // construct dictionary of preference names and window titles
     NSMutableDictionary *preferenceWindowTitleDatabase = [NSMutableDictionary dictionary];
     [preferenceWindowTitleDatabase setObject:MRGeneralPreferencesWindowTitle forKey:MRGeneralPreferencesIdentifier];
+    [preferenceWindowTitleDatabase setObject:MRAccountPreferencesWindowTitle forKey:MRAccountPreferencesIdentifier];
     [preferenceWindowTitleDatabase setObject:MREventsPreferencesWindowTitle forKey:MREventsPreferencesIdentifier];
     [preferenceWindowTitleDatabase setObject:MRUpdatePreferencesWindowTitle forKey:MRUpdatePreferencesIdentifier];
     
