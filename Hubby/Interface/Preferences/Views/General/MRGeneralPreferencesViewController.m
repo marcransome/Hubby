@@ -24,10 +24,6 @@
 
 @interface MRGeneralPreferencesViewController ()
 
-@property (weak) IBOutlet NSTextField *minutesLabel;
-@property (weak) IBOutlet NSSlider *minutesSlider;
-@property (weak) IBOutlet NSTextField *minutesField;
-
 - (IBAction)repeatIntervalChanged:(id)sender;
 
 @end
@@ -50,9 +46,7 @@
 }
 
 - (IBAction)repeatIntervalChanged:(id)sender
-{    
-    [_minutesField setStringValue:[_minutesSlider stringValue]];
-    
+{
     NSNotification *repeatIntervalChanged = [NSNotification notificationWithName:@"RepeatIntervalChanged" object:nil];
     [[NSNotificationCenter defaultCenter] postNotification:repeatIntervalChanged];
 }
