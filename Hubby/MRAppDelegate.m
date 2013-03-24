@@ -54,8 +54,11 @@ enum {
 + (void)initialize
 {
     // omit client_id and secret from repo!
-    NSDictionary *gitHubConfDict = @{ kNXOAuth2AccountStoreConfigurationClientID: @"",
-                                     kNXOAuth2AccountStoreConfigurationSecret: @"",
+    NSString *clientId = [[[NSProcessInfo processInfo] environment] objectForKey:@"HUBBY_CLIENTID"];
+    NSString *secret = [[[NSProcessInfo processInfo] environment] objectForKey:@"HUBBY_SECRET"];
+    
+    NSDictionary *gitHubConfDict = @{ kNXOAuth2AccountStoreConfigurationClientID: clientId,
+                                     kNXOAuth2AccountStoreConfigurationSecret: secret,
                                      kNXOAuth2AccountStoreConfigurationAuthorizeURL: [NSURL URLWithString:@"https://github.com/login/oauth/authorize"],
                                      kNXOAuth2AccountStoreConfigurationTokenURL: [NSURL URLWithString:@"https://github.com/login/oauth/access_token"],
                                      kNXOAuth2AccountStoreConfigurationRedirectURL: [NSURL URLWithString:@"hubbyapp://callback/"],
