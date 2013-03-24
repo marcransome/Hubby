@@ -26,8 +26,20 @@
 #import <DDLog.h>
 #import <DDASLLogger.h>
 #import <DDTTYLogger.h>
+#import <NXOAuth2.h>
 
-static int ddLogLevel = LOG_LEVEL_VERBOSE;
+#pragma mark Notifications
+
+NSString* const MRAccountAuthorised = @"MRAccountAuthorised";
+NSString* const MRAccountDeauthorised = @"MRAccountDeauthorised";
+NSString* const MRWaitingOnApiRequest = @"MRWaitingOnApiRequest";
+NSString* const MRReceivedApiResponse = @"MRReceivedApiResponse";
+
+#pragma mark Logging
+
+int ddLogLevel = LOG_LEVEL_VERBOSE;
+
+#pragma mark Enumerations
 
 enum {
     MRMajorAndMinorNotifications = 0,
@@ -35,10 +47,48 @@ enum {
     MRMinorNotifications = 2
 };
 
+#pragma mark -
+
 @implementation MRAppDelegate
+
++ (void)initialize
+{
+    // omit client_id and secret from repo!
+    NSDictionary *gitHubConfDict = @{ kNXOAuth2AccountStoreConfigurationClientID: @"",
+                                     kNXOAuth2AccountStoreConfigurationSecret: @"",
+                                     kNXOAuth2AccountStoreConfigurationAuthorizeURL: [NSURL URLWithString:@"https://github.com/login/oauth/authorize"],
+                                     kNXOAuth2AccountStoreConfigurationTokenURL: [NSURL URLWithString:@"https://github.com/login/oauth/access_token"],
+                                     kNXOAuth2AccountStoreConfigurationRedirectURL: [NSURL URLWithString:@"hubbyapp://callback/"],
+                                     kNXOAuth2AccountStoreConfigurationTokenType: @"bearer"};
+    
+    [[NXOAuth2AccountStore sharedStore] setConfiguration:gitHubConfDict forAccountType:@"GitHub"];
+}
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+    // register url handler and observers for github callback
+    [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(handleAppleEvent:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:NXOAuth2AccountStoreAccountsDidChangeNotification
+                                                      object:[NXOAuth2AccountStore sharedStore]
+                                                       queue:nil
+                                                  usingBlock:^(NSNotification *notification) {
+                                                      // this block may be triggered by events other than account authentication (e.g. account removal)
+                                                      // so we must test for the existence of NXOAuth2AccountStoreNewAccountUserInfoKey
+                                                      if ([[notification userInfo] objectForKey:@"NXOAuth2AccountStoreNewAccountUserInfoKey"]) {
+                                                          [self requestApi];
+                                                      }
+                                                  }];
+    
+    [[NSNotificationCenter defaultCenter] addObserverForName:NXOAuth2AccountStoreDidFailToRequestAccessNotification
+                                                      object:[NXOAuth2AccountStore sharedStore]
+                                                       queue:nil
+                                                  usingBlock:^(NSNotification *aNotification) {
+                                                      NSError *error = [aNotification.userInfo objectForKey:NXOAuth2AccountStoreErrorKey];
+                                                      DDLogVerbose(@"GitHub authentication failed!");
+                                                  }];
+    
+    // configure loggers
     [DDLog addLogger:[DDASLLogger sharedInstance]];
     [DDLog addLogger:[DDTTYLogger sharedInstance]];
     
@@ -56,6 +106,14 @@ enum {
     
     // set initial preference view by using user defaults
     [_prefWindowController setInitialPreference:[[NSUserDefaults standardUserDefaults] stringForKey:@"DefaultPreferenceViewController"]];
+    
+    // if a stored account is found then we request the github api which will also indicate if we are
+    // still authorised to access the service (i.e. it will otherwise fail with a 401-404 http error)
+    if ([[[NXOAuth2AccountStore sharedStore] accountsWithAccountType:@"GitHub"] lastObject]) {
+        DDLogVerbose(@"stored account found, sending api request");
+        [[NSNotificationCenter defaultCenter] postNotificationName:MRWaitingOnApiRequest object:nil];
+        [self requestApi];
+    }
     
     // menu item setup
     _hubbyMenuItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSSquareStatusItemLength];
@@ -113,7 +171,7 @@ enum {
     if (apiJsonData == nil || [apiResponse statusCode] != 200)
     {
         if (apiError)
-            DDLogError(@"error for api request: %@", [apiError localizedDescription]);
+            DDLogError(@"error for api request: %@ (%@ %li)", [apiError domain], [apiError localizedDescription], [apiError code]);
         else
             DDLogError(@"no data received or http error for api request (status code is %li)", [apiResponse statusCode]);
         
@@ -143,7 +201,7 @@ enum {
     if (statusJsonData == nil || [statusResponse statusCode] != 200)
     {
         if (statusError)
-            DDLogError(@"error for status request: %@", [statusError localizedDescription]);
+            DDLogError(@"error for status request: %@ (%@ %li)", [statusError domain], [statusError localizedDescription], [statusError code]);
         else
             DDLogError(@"no data received or http error for status request (status code is %li)", [statusResponse statusCode]);
         
@@ -175,7 +233,7 @@ enum {
     if (lastMessageJsonData == nil || [lastMessageResponse statusCode] != 200)
     {
         if (lastMessageError)
-            DDLogError(@"error for last message request: %@", [lastMessageError localizedDescription]);
+            DDLogError(@"error for last message request: %@ (%@ %li)", [lastMessageError localizedDescription], [lastMessageError domain], [lastMessageError code]);
         else
             DDLogError(@"no data received or http error for last message request (status code is %li)", [lastMessageResponse statusCode]);
         
@@ -306,6 +364,101 @@ enum {
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"RemoveNotificationsOnClick"]) {
         [[NSUserNotificationCenter defaultUserNotificationCenter] removeDeliveredNotification:notification];
     }
+}
+
+- (void)handleAppleEvent:(NSAppleEventDescriptor *)event withReplyEvent: (NSAppleEventDescriptor *)replyEvent
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:MRWaitingOnApiRequest object:nil];
+    
+    NSURL *url = [NSURL URLWithString:[[event paramDescriptorForKeyword:keyDirectObject] stringValue]];
+    DDLogVerbose(@"callback received (%@)", url);
+    
+    [[NXOAuth2AccountStore sharedStore] handleRedirectURL:url];
+}
+
+- (void)requestApi
+{
+    [NXOAuth2Request performMethod:@"GET" onResource:[NSURL URLWithString:@"https://api.github.com/user"] usingParameters:nil withAccount:[[[NXOAuth2AccountStore sharedStore] accountsWithAccountType:@"GitHub"] lastObject] sendProgressHandler:^(unsigned long long bytesSend, unsigned long long bytesTotal) {
+        // silent
+    } responseHandler:^(NSURLResponse *response, NSData *responseData, NSError *error) {
+        NSDictionary *results = [responseData objectFromJSONData];
+
+        if (error) {
+            
+            if ([error code] >= 401 && [error code] <= 404)
+            {
+                // user likely revoked our access
+                DDLogError(@"401-404 error: no longer authorised, removing accounts");
+                
+                for (NXOAuth2Account *account in [[NXOAuth2AccountStore sharedStore] accountsWithAccountType:@"GitHub"]) {
+                    [[NXOAuth2AccountStore sharedStore] removeAccount:account];
+                };
+                
+                // ensure account preference view is up to date
+                [[NSNotificationCenter defaultCenter] postNotificationName:MRAccountDeauthorised object:nil];
+                
+                NSAlert *alert = [[NSAlert alloc] init];
+                [alert setMessageText:@"Hubby was unable to access GitHub.  Please authenticate again."];
+                [alert runModal];
+            }
+            else {
+                 // TODO handle other error types
+            }
+            
+            DDLogError(@"an api request error occured (%li: %@)", [error code], [error description]);
+        }
+        else {
+            DDLogVerbose(@"%@", results);
+            [[NSNotificationCenter defaultCenter] postNotificationName:MRAccountAuthorised object:results];
+            
+            [self requestRepos];
+        }
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:MRReceivedApiResponse object:nil];
+    }];
+}
+
+- (void)requestRepos
+{
+    [NXOAuth2Request performMethod:@"GET" onResource:[NSURL URLWithString:@"https://api.github.com/user/repos"] usingParameters:nil withAccount:[[[NXOAuth2AccountStore sharedStore] accountsWithAccountType:@"GitHub"] lastObject] sendProgressHandler:^(unsigned long long bytesSend, unsigned long long bytesTotal) {
+        // silent
+    } responseHandler:^(NSURLResponse *response, NSData *responseData, NSError *error) {
+        NSArray *results = [responseData objectFromJSONData];
+        
+        if (error) {
+            
+            if ([error code] >= 401 && [error code] <= 404)
+            {
+                // user likely revoked our access
+                DDLogError(@"401-404 error: no longer authorised, removing accounts");
+                
+                for (NXOAuth2Account *account in [[NXOAuth2AccountStore sharedStore] accountsWithAccountType:@"GitHub"]) {
+                    [[NXOAuth2AccountStore sharedStore] removeAccount:account];
+                };
+                
+                // ensure account preference view is up to date
+                [[NSNotificationCenter defaultCenter] postNotificationName:MRAccountDeauthorised object:nil];
+                
+                NSAlert *alert = [[NSAlert alloc] init];
+                [alert setMessageText:@"Hubby was unable to access GitHub.  Please authenticate again."];
+                [alert runModal];
+            }
+            else {
+                // TODO handle other error types
+            }
+            
+            DDLogError(@"repos request error occured (%li: %@)", [error code], [error description]);
+        }
+        else {
+
+            for (NSDictionary *repo in results) {
+                NSString *repoName = [repo objectForKey:@"full_name"];
+                
+                NSLog(@"%@", [repo objectForKey:@"full_name"]);
+                [[self hubbyMenu] addItem:[[NSMenuItem alloc] initWithTitle:repoName action:nil keyEquivalent:@""]];
+            }
+        }
+    }];
 }
 
 @end

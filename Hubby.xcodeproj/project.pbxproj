@@ -10,11 +10,12 @@
 		192D5A7016F31BAD00E4DF19 /* events.icns in Resources */ = {isa = PBXBuildFile; fileRef = 192D5A6F16F31BAD00E4DF19 /* events.icns */; };
 		192D5A7A16F31C6400E4DF19 /* MREventsPreferencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 192D5A7816F31C6400E4DF19 /* MREventsPreferencesViewController.m */; };
 		192D5A7B16F31C6400E4DF19 /* MREventsPreferencesView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 192D5A7916F31C6400E4DF19 /* MREventsPreferencesView.xib */; };
-		196B543816F4C3DE000DA841 /* Acknowledgements.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 196B543716F4C3DE000DA841 /* Acknowledgements.rtf */; };
 		196B543B16F520FE000DA841 /* menu_highlight.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 196B543A16F520FE000DA841 /* menu_highlight.tiff */; };
 		196B543D16F5EE41000DA841 /* menu_icon.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 196B543C16F5EE41000DA841 /* menu_icon.tiff */; };
 		196B544216F71277000DA841 /* MRAccountPreferencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 196B544016F71277000DA841 /* MRAccountPreferencesViewController.m */; };
-		196B544316F71277000DA841 /* MRAccountPreferencesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 196B544116F71277000DA841 /* MRAccountPreferencesViewController.xib */; };
+		196B544316F71277000DA841 /* MRAccountPreferencesView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 196B544116F71277000DA841 /* MRAccountPreferencesView.xib */; };
+		198E251A16FE7BAA00B4423F /* Octocat.png in Resources */ = {isa = PBXBuildFile; fileRef = 198E251916FE7BAA00B4423F /* Octocat.png */; };
+		198E251C16FE7C9D00B4423F /* Acknowledgements.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 198E251B16FE7C9D00B4423F /* Acknowledgements.rtf */; };
 		19A4BDBF16F2639400E8BE63 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19A4BDBE16F2639400E8BE63 /* Cocoa.framework */; };
 		19A4BDC916F2639400E8BE63 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 19A4BDC716F2639400E8BE63 /* InfoPlist.strings */; };
 		19A4BDCB16F2639400E8BE63 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 19A4BDCA16F2639400E8BE63 /* main.m */; };
@@ -54,12 +55,13 @@
 		192D5A7716F31C6400E4DF19 /* MREventsPreferencesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MREventsPreferencesViewController.h; path = Interface/Preferences/Views/Events/MREventsPreferencesViewController.h; sourceTree = "<group>"; };
 		192D5A7816F31C6400E4DF19 /* MREventsPreferencesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MREventsPreferencesViewController.m; path = Interface/Preferences/Views/Events/MREventsPreferencesViewController.m; sourceTree = "<group>"; };
 		192D5A7916F31C6400E4DF19 /* MREventsPreferencesView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MREventsPreferencesView.xib; path = Interface/Preferences/Views/Events/MREventsPreferencesView.xib; sourceTree = "<group>"; };
-		196B543716F4C3DE000DA841 /* Acknowledgements.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; path = Acknowledgements.rtf; sourceTree = "<group>"; };
 		196B543A16F520FE000DA841 /* menu_highlight.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = menu_highlight.tiff; sourceTree = "<group>"; };
 		196B543C16F5EE41000DA841 /* menu_icon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = menu_icon.tiff; sourceTree = "<group>"; };
 		196B543F16F71277000DA841 /* MRAccountPreferencesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MRAccountPreferencesViewController.h; path = Interface/Preferences/Views/Account/MRAccountPreferencesViewController.h; sourceTree = "<group>"; };
 		196B544016F71277000DA841 /* MRAccountPreferencesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MRAccountPreferencesViewController.m; path = Interface/Preferences/Views/Account/MRAccountPreferencesViewController.m; sourceTree = "<group>"; };
-		196B544116F71277000DA841 /* MRAccountPreferencesViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MRAccountPreferencesViewController.xib; path = Interface/Preferences/Views/Account/MRAccountPreferencesViewController.xib; sourceTree = "<group>"; };
+		196B544116F71277000DA841 /* MRAccountPreferencesView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MRAccountPreferencesView.xib; path = Interface/Preferences/Views/Account/MRAccountPreferencesView.xib; sourceTree = "<group>"; };
+		198E251916FE7BAA00B4423F /* Octocat.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Octocat.png; path = Resources/Octocat.png; sourceTree = "<group>"; };
+		198E251B16FE7C9D00B4423F /* Acknowledgements.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; name = Acknowledgements.rtf; path = Resources/License/Acknowledgements.rtf; sourceTree = "<group>"; };
 		19A4BDBB16F2639400E8BE63 /* Hubby.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hubby.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		19A4BDBE16F2639400E8BE63 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		19A4BDC116F2639400E8BE63 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -118,6 +120,7 @@
 		196092EB16F2A4E9002F8C8D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				198E251916FE7BAA00B4423F /* Octocat.png */,
 				196092EC16F2A4EE002F8C8D /* Toolbar Icons */,
 				196092ED16F2A4FD002F8C8D /* Status Images */,
 				19C145AD16F3E69A007AEC14 /* Sparkle Key */,
@@ -150,7 +153,7 @@
 			children = (
 				196B543F16F71277000DA841 /* MRAccountPreferencesViewController.h */,
 				196B544016F71277000DA841 /* MRAccountPreferencesViewController.m */,
-				196B544116F71277000DA841 /* MRAccountPreferencesViewController.xib */,
+				196B544116F71277000DA841 /* MRAccountPreferencesView.xib */,
 			);
 			name = Account;
 			sourceTree = "<group>";
@@ -273,7 +276,7 @@
 		19C145AE16F3FEEC007AEC14 /* License */ = {
 			isa = PBXGroup;
 			children = (
-				196B543716F4C3DE000DA841 /* Acknowledgements.rtf */,
+				198E251B16FE7C9D00B4423F /* Acknowledgements.rtf */,
 			);
 			name = License;
 			sourceTree = "<group>";
@@ -344,10 +347,11 @@
 				192D5A7016F31BAD00E4DF19 /* events.icns in Resources */,
 				192D5A7B16F31C6400E4DF19 /* MREventsPreferencesView.xib in Resources */,
 				19C145AC16F3E689007AEC14 /* hubby.pem in Resources */,
-				196B543816F4C3DE000DA841 /* Acknowledgements.rtf in Resources */,
 				196B543B16F520FE000DA841 /* menu_highlight.tiff in Resources */,
 				196B543D16F5EE41000DA841 /* menu_icon.tiff in Resources */,
-				196B544316F71277000DA841 /* MRAccountPreferencesViewController.xib in Resources */,
+				196B544316F71277000DA841 /* MRAccountPreferencesView.xib in Resources */,
+				198E251A16FE7BAA00B4423F /* Octocat.png in Resources */,
+				198E251C16FE7C9D00B4423F /* Acknowledgements.rtf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

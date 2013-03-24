@@ -45,4 +45,8 @@
 - (IBAction)showAbout:(id)sender;
 - (IBAction)showAcknowledgements:(id)sender;
 
+- (void)handleAppleEvent:(NSAppleEventDescriptor *)event withReplyEvent: (NSAppleEventDescriptor *)replyEvent;
+- (void)requestApi;
+- (void)requestRepos;
+
 @end

@@ -42,6 +42,17 @@
 	<integer>86400</integer>
 	<key>SUPublicDSAKeyFile</key>
 	<string>hubby.pem</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>hubbyapp</string>
+			</array>
+			<key>CFBundleURLName</key>
+			<string>Hubby&apos;s callback</string>
+		</dict>
+	</array>
 	<key>SUEnableSystemProfiling</key>
 	<true/>
 </dict>

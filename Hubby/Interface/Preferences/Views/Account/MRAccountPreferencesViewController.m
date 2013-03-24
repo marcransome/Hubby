@@ -21,21 +21,123 @@
 //
 
 #import "MRAccountPreferencesViewController.h"
+#import <NXOAuth2AccountStore.h>
+
+#pragma mark Externals
+
+extern NSString* const MRAccountAuthorised;
+extern NSString* const MRAccountDeauthorised;
+extern NSString* const MRWaitingOnApiRequest;
+extern NSString* const MRReceivedApiResponse;
 
 @interface MRAccountPreferencesViewController ()
 
+@property (weak) IBOutlet NSButton *authoriseButton;
+@property (strong) IBOutlet NSView *userAuthenticateView;
+@property (strong) IBOutlet NSView *userInfoView;
+@property (weak) IBOutlet NSTextField *userInfoName;
+@property (weak) IBOutlet NSTextField *userInfoLocation;
+@property (weak) IBOutlet NSImageView *userAvatar;
+@property (weak) IBOutlet NSProgressIndicator *progressIndicator;
+
+- (IBAction)authoriseAccount:(id)sender;
+- (IBAction)deauthoriseAccount:(id)sender;
+- (void)showProgress:(NSNotification*)notification;
+- (void)stopProgress:(NSNotification*)notification;
+- (void)accountWasAuthorised:(NSNotification*)notification;
+- (void)accountWasDeauthorised:(NSNotification*)notification;
+
 @end
 
+#pragma mark -
+
 @implementation MRAccountPreferencesViewController
+
+- (NSString *)nibName
+{
+    return @"MRAccountPreferencesView";
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        // Initialization code here.
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(accountWasAuthorised:)
+                                                     name:MRAccountAuthorised object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(accountWasDeauthorised:)
+                                                     name:MRAccountDeauthorised object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(showProgress:)
+                                                     name:MRWaitingOnApiRequest object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(stopProgress:)
+                                                     name:MRReceivedApiResponse object:nil];
+        
+        [[self view] addSubview:[self userAuthenticateView]];
     }
     
     return self;
+}
+
+#pragma mark -
+#pragma mark Action Methods
+
+- (IBAction)authoriseAccount:(id)sender
+{
+    [[NXOAuth2AccountStore sharedStore] requestAccessToAccountWithType:@"GitHub"];
+}
+
+- (IBAction)deauthoriseAccount:(id)sender
+{
+    for (NXOAuth2Account *account in [[NXOAuth2AccountStore sharedStore] accountsWithAccountType:@"GitHub"]) {
+        [[NXOAuth2AccountStore sharedStore] removeAccount:account];
+    };
+    
+    [[self userInfoView] removeFromSuperview];
+    [[self view] addSubview:[self userAuthenticateView]];
+}
+
+#pragma mark -
+#pragma mark Observer Methods
+
+- (void)accountWasAuthorised:(NSNotification*)notification
+{
+    NSDictionary *userInfo = [notification object];
+    
+    [[self userInfoName] setStringValue:[NSString stringWithFormat:@"Name: %@", [userInfo objectForKey:@"name"]]];
+    [[self userInfoLocation] setStringValue:[NSString stringWithFormat:@"Location: %@", [userInfo objectForKey:@"location"]]];
+  
+    NSURL *userAvatarURL = [NSURL URLWithString:[userInfo objectForKey:@"avatar_url"]];
+    NSImage *userAvatarImage = [[NSImage alloc] initWithContentsOfURL:userAvatarURL];
+    [[self userAvatar] setImage:userAvatarImage];
+    
+    [[self userAuthenticateView] removeFromSuperview];
+    [[self view] addSubview:[self userInfoView]];
+}
+
+- (void)accountWasDeauthorised:(NSNotification*)notification
+{
+    [[self userInfoView] removeFromSuperview];
+    [[self view] addSubview:[self userAuthenticateView]];
+}
+
+- (void)showProgress:(NSNotification*)notification
+{
+    [[self authoriseButton] setEnabled:NO];
+    [[self progressIndicator] setHidden:NO];
+    [[self progressIndicator] startAnimation:nil];
+}
+
+- (void)stopProgress:(NSNotification*)notification
+{
+    [[self authoriseButton] setEnabled:YES];
+    [[self progressIndicator] stopAnimation:nil];
+    [[self progressIndicator] setHidden:YES];
 }
 
 @end

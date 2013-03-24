@@ -49,8 +49,8 @@
     return self;
 }
 
-- (IBAction)repeatIntervalChanged:(id)sender {
-    
+- (IBAction)repeatIntervalChanged:(id)sender
+{    
     [_minutesField setStringValue:[_minutesSlider stringValue]];
     
     NSNotification *repeatIntervalChanged = [NSNotification notificationWithName:@"RepeatIntervalChanged" object:nil];
