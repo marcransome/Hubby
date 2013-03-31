@@ -123,9 +123,9 @@
 		190C99951700F1B600D33EA7 /* Repositories */ = {
 			isa = PBXGroup;
 			children = (
-				196946BF1708A95A00983433 /* MRCreateRepositoryWindow.xib */,
 				196946C01708A95A00983433 /* MRCreateRepositoryWindowController.h */,
 				196946C11708A95A00983433 /* MRCreateRepositoryWindowController.m */,
+				196946BF1708A95A00983433 /* MRCreateRepositoryWindow.xib */,
 			);
 			name = Repositories;
 			sourceTree = "<group>";

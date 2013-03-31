@@ -10,6 +10,9 @@
 
 @interface MREventsPreferencesViewController ()
 
+@property (weak) IBOutlet NSTextField *checkFrequencyLabel;
+@property (weak) IBOutlet NSTextField *checkMinutesLabel;
+
 - (IBAction)repeatIntervalChanged:(id)sender;
 - (IBAction)notificationsEnabledChanged:(id)sender;
 
@@ -38,8 +41,16 @@
     [[NSNotificationCenter defaultCenter] postNotification:repeatIntervalChanged];
 }
 
-- (IBAction)notificationsEnabledChanged:(id)sender {
-    
+- (IBAction)notificationsEnabledChanged:(id)sender
+{
+    if ([sender state] == NSOnState) {
+        [[self checkFrequencyLabel] setTextColor:[NSColor controlTextColor]];
+        [[self checkMinutesLabel] setTextColor:[NSColor controlTextColor]];
+    }
+    else {
+        [[self checkFrequencyLabel] setTextColor:[NSColor disabledControlTextColor]];
+        [[self checkMinutesLabel] setTextColor:[NSColor disabledControlTextColor]];
+    }
 }
 
 @end

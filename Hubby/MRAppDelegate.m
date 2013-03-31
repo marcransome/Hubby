@@ -106,6 +106,12 @@ enum {
     NSDictionary *defaultsDict = [NSDictionary dictionaryWithContentsOfFile:defaultsPath];
     [[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDict];
     
+    // clear old notications
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"RemoveOldNotifications"]) {
+        NSLog(@"removing");
+        [[NSUserNotificationCenter defaultUserNotificationCenter] removeAllDeliveredNotifications];
+    }
+    
     // create preference controller
     _prefWindowController = [[MRPreferencesWindowController alloc] initWithWindowNibName:@"MRPreferencesWindow"];
     
@@ -160,6 +166,7 @@ enum {
                                                repeats:YES];
 
     [_statusTimer fire];
+    
 }
 
 - (IBAction)updateHubby:(id)sender
