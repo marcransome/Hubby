@@ -10,6 +10,9 @@
 
 @interface MREventsPreferencesViewController ()
 
+- (IBAction)repeatIntervalChanged:(id)sender;
+- (IBAction)notificationsEnabledChanged:(id)sender;
+
 @end
 
 @implementation MREventsPreferencesViewController
@@ -27,6 +30,16 @@
     }
     
     return self;
+}
+
+- (IBAction)repeatIntervalChanged:(id)sender
+{
+    NSNotification *repeatIntervalChanged = [NSNotification notificationWithName:@"RepeatIntervalChanged" object:nil];
+    [[NSNotificationCenter defaultCenter] postNotification:repeatIntervalChanged];
+}
+
+- (IBAction)notificationsEnabledChanged:(id)sender {
+    
 }
 
 @end

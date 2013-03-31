@@ -24,8 +24,6 @@
 
 @interface MRGeneralPreferencesViewController ()
 
-- (IBAction)repeatIntervalChanged:(id)sender;
-
 @end
 
 @implementation MRGeneralPreferencesViewController
@@ -43,12 +41,6 @@
     }
     
     return self;
-}
-
-- (IBAction)repeatIntervalChanged:(id)sender
-{
-    NSNotification *repeatIntervalChanged = [NSNotification notificationWithName:@"RepeatIntervalChanged" object:nil];
-    [[NSNotificationCenter defaultCenter] postNotification:repeatIntervalChanged];
 }
 
 @end

@@ -34,6 +34,7 @@ NSString* const MRAccountAuthorised = @"MRAccountAuthorised";
 NSString* const MRAccountDeauthorised = @"MRAccountDeauthorised";
 NSString* const MRWaitingOnApiRequest = @"MRWaitingOnApiRequest";
 NSString* const MRReceivedApiResponse = @"MRReceivedApiResponse";
+NSString* const MRUserDidDeauthorise = @"MRUserDidDeauthorise";
 
 #pragma mark Logging
 
@@ -56,13 +57,14 @@ enum {
     // omit client_id and secret from repo!
     NSString *clientId = [[[NSProcessInfo processInfo] environment] objectForKey:@"HUBBY_CLIENTID"];
     NSString *secret = [[[NSProcessInfo processInfo] environment] objectForKey:@"HUBBY_SECRET"];
-    
+        
     NSDictionary *gitHubConfDict = @{ kNXOAuth2AccountStoreConfigurationClientID: clientId,
                                      kNXOAuth2AccountStoreConfigurationSecret: secret,
                                      kNXOAuth2AccountStoreConfigurationAuthorizeURL: [NSURL URLWithString:@"https://github.com/login/oauth/authorize"],
                                      kNXOAuth2AccountStoreConfigurationTokenURL: [NSURL URLWithString:@"https://github.com/login/oauth/access_token"],
                                      kNXOAuth2AccountStoreConfigurationRedirectURL: [NSURL URLWithString:@"hubbyapp://callback/"],
-                                     kNXOAuth2AccountStoreConfigurationTokenType: @"bearer"};
+                                     kNXOAuth2AccountStoreConfigurationTokenType: @"bearer",
+                                     kNXOAuth2AccountStoreConfigurationScope: [NSSet setWithObjects:@"user", @"repo", nil]};
     
     [[NXOAuth2AccountStore sharedStore] setConfiguration:gitHubConfDict forAccountType:@"GitHub"];
 }
@@ -117,6 +119,12 @@ enum {
         [[NSNotificationCenter defaultCenter] postNotificationName:MRWaitingOnApiRequest object:nil];
         [self requestApi];
     }
+    
+    // observer for user deauthorisation
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(deauthoriseAccount:)
+                                                 name:MRUserDidDeauthorise object:nil];
+    
     
     // menu item setup
     _hubbyMenuItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSSquareStatusItemLength];
@@ -356,8 +364,19 @@ enum {
     DDLogVerbose(@"adjusted timer interval (%lis)", (long)repeatIntervalInSeconds);
 }
 
-- (IBAction)showAcknowledgements:(id)sender {
+- (IBAction)showAcknowledgements:(id)sender
+{
     [[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] pathForResource:@"Acknowledgements" ofType:@"rtf"]];
+}
+
+- (IBAction)showCreateRepository:(id)sender
+{
+    if (!_gistWindow) {
+        _gistWindow = [[MRCreateRepositoryWindowController alloc] initWithWindowNibName:@"MRCreateRepositoryWindow"];
+    }
+    
+    [NSApp activateIgnoringOtherApps: YES];
+    [[_gistWindow window] makeKeyAndOrderFront:nil];
 }
 
 -(void)userNotificationCenter:(NSUserNotificationCenter *)center didActivateNotification:(NSUserNotification *)notification
@@ -371,12 +390,16 @@ enum {
 
 - (void)handleAppleEvent:(NSAppleEventDescriptor *)event withReplyEvent: (NSAppleEventDescriptor *)replyEvent
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:MRWaitingOnApiRequest object:nil];
-    
-    NSURL *url = [NSURL URLWithString:[[event paramDescriptorForKeyword:keyDirectObject] stringValue]];
-    DDLogVerbose(@"callback received (%@)", url);
-    
-    [[NXOAuth2AccountStore sharedStore] handleRedirectURL:url];
+    if ([[event description] rangeOfString:@"error"].location == NSNotFound) {
+        NSLog(@"%@ %@", [event description], [replyEvent description]);
+        [[NSNotificationCenter defaultCenter] postNotificationName:MRWaitingOnApiRequest object:nil];
+        
+        NSURL *url = [NSURL URLWithString:[[event paramDescriptorForKeyword:keyDirectObject] stringValue]];
+        DDLogVerbose(@"callback received (%@)", url);
+        
+        [[NXOAuth2AccountStore sharedStore] handleRedirectURL:url];
+        NSLog(@"%@,", url);
+    }
 }
 
 - (void)requestApi
@@ -397,8 +420,7 @@ enum {
                     [[NXOAuth2AccountStore sharedStore] removeAccount:account];
                 };
                 
-                // ensure account preference view is up to date
-                [[NSNotificationCenter defaultCenter] postNotificationName:MRAccountDeauthorised object:nil];
+                [self deauthoriseAccount:nil];
                 
                 NSAlert *alert = [[NSAlert alloc] init];
                 [alert setMessageText:@"Hubby was unable to access GitHub.  Please authenticate again."];
@@ -439,8 +461,7 @@ enum {
                     [[NXOAuth2AccountStore sharedStore] removeAccount:account];
                 };
                 
-                // ensure account preference view is up to date
-                [[NSNotificationCenter defaultCenter] postNotificationName:MRAccountDeauthorised object:nil];
+                [self deauthoriseAccount:nil];
                 
                 NSAlert *alert = [[NSAlert alloc] init];
                 [alert setMessageText:@"Hubby was unable to access GitHub.  Please authenticate again."];
@@ -454,14 +475,30 @@ enum {
         }
         else {
 
-            for (NSDictionary *repo in results) {
-                NSString *repoName = [repo objectForKey:@"full_name"];
-                
-                NSLog(@"%@", [repo objectForKey:@"full_name"]);
-                [[self hubbyMenu] addItem:[[NSMenuItem alloc] initWithTitle:repoName action:nil keyEquivalent:@""]];
+            if ([results count] > 0) {
+                [[self publicReposMenuItem] setEnabled:YES];
+                for (NSDictionary *repo in results) {
+                    NSString *repoName = [repo objectForKey:@"full_name"];
+                    NSMenuItem *menuItem = [[NSMenuItem alloc] initWithTitle:repoName action:@selector(openRepo:) keyEquivalent:@""];
+                    [[self publicReposMenu] addItem:menuItem];
+                    [menuItem setTarget:self];
+                }
             }
         }
     }];
+}
+
+- (void)openRepo:(id)sender
+{
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://github.com/%@", [sender title]]]];
+}
+
+- (void)deauthoriseAccount:(NSNotification *)notification
+{
+    // ensure account preference view is up to date
+    [[NSNotificationCenter defaultCenter] postNotificationName:MRAccountDeauthorised object:nil];
+    [[self publicReposMenu] removeAllItems];
+    [[self publicReposMenuItem] setEnabled:NO];
 }
 
 @end

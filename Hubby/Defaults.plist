@@ -10,6 +10,16 @@
 	<string>MRGeneralPreferencesViewController</string>
 	<key>ServiceRestoredNotification</key>
 	<true/>
+	<key>enableNotifications</key>
+	<true/>
+	<key>openAfterCreateRepo</key>
+	<false/>
+	<key>copyAfterCreateRepo</key>
+	<false/>
+	<key>openAfterCreateGist</key>
+	<false/>
+	<key>copyAfterCreateGist</key>
+	<false/>
 	<key>RemoveNotificationsOnClick</key>
 	<true/>
 </dict>

@@ -21,6 +21,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "MRCreateRepositoryWindowController.h"
 
 @class MRPreferencesWindowController;
 
@@ -29,10 +30,14 @@
 @property (strong) NSStatusItem* hubbyMenuItem;
 @property (weak) IBOutlet NSMenu *hubbyMenu;
 @property (weak) IBOutlet NSMenuItem *hubbyStatusItem;
+@property (weak) IBOutlet NSMenuItem *createRepoMenuItem;
+@property (weak) IBOutlet NSMenuItem *publicReposMenuItem;
+@property (weak) IBOutlet NSMenu *publicReposMenu;
 @property (strong) NSTimer *statusTimer;
 @property (assign) BOOL waitingOnLastRequest;
 @property (strong) MRPreferencesWindowController *prefWindowController;
 @property (strong) NSString *currentStatus;
+@property (strong) MRCreateRepositoryWindowController *gistWindow;
 
 - (IBAction)updateHubby:(id)sender;
 
@@ -44,9 +49,13 @@
 - (IBAction)showPreferences:(id)sender;
 - (IBAction)showAbout:(id)sender;
 - (IBAction)showAcknowledgements:(id)sender;
+- (IBAction)showCreateRepository:(id)sender;
 
 - (void)handleAppleEvent:(NSAppleEventDescriptor *)event withReplyEvent: (NSAppleEventDescriptor *)replyEvent;
 - (void)requestApi;
 - (void)requestRepos;
+- (void)openRepo:(id)sender;
+
+- (void)deauthoriseAccount:(NSNotification *)notification;
 
 @end

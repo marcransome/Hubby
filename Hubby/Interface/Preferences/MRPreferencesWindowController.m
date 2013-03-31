@@ -46,6 +46,11 @@ static NSString* const MRUpdatePreferencesWindowTitle = @"Update";
     self = [super initWithWindow:window];
     if (self) {
         [self setViewControllers:[NSMutableDictionary dictionary]];
+        
+        // ensure that our account preferences view exists after initialisation
+        // of the controller, so that it is ready to receive notifications should
+        // the user have previously authenticated an account
+        [self viewControllerForName:MRAccountPreferencesName];
     }
     
     return self;

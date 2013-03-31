@@ -29,6 +29,7 @@ extern NSString* const MRAccountAuthorised;
 extern NSString* const MRAccountDeauthorised;
 extern NSString* const MRWaitingOnApiRequest;
 extern NSString* const MRReceivedApiResponse;
+extern NSString* const MRUserDidDeauthorise;
 
 @interface MRAccountPreferencesViewController ()
 
@@ -100,6 +101,8 @@ extern NSString* const MRReceivedApiResponse;
     
     [[self userInfoView] removeFromSuperview];
     [[self view] addSubview:[self userAuthenticateView]];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:MRUserDidDeauthorise object:nil];
 }
 
 #pragma mark -
@@ -109,12 +112,26 @@ extern NSString* const MRReceivedApiResponse;
 {
     NSDictionary *userInfo = [notification object];
     
-    [[self userInfoName] setStringValue:[NSString stringWithFormat:@"Name: %@", [userInfo objectForKey:@"name"]]];
-    [[self userInfoLocation] setStringValue:[NSString stringWithFormat:@"Location: %@", [userInfo objectForKey:@"location"]]];
+    if ([userInfo objectForKey:@"name"])
+        [[self userInfoName] setStringValue:[NSString stringWithFormat:@"Name: %@", [userInfo objectForKey:@"name"]]];
+    else
+        [[self userInfoName] setStringValue:[NSString stringWithFormat:@"Name: none"]];
+    
+    if ([userInfo objectForKey:@"location"])
+        [[self userInfoLocation] setStringValue:[NSString stringWithFormat:@"Location: %@", [userInfo objectForKey:@"location"]]];
+    else
+        [[self userInfoLocation] setStringValue:[NSString stringWithFormat:@"Location: none"]];
   
-    NSURL *userAvatarURL = [NSURL URLWithString:[userInfo objectForKey:@"avatar_url"]];
-    NSImage *userAvatarImage = [[NSImage alloc] initWithContentsOfURL:userAvatarURL];
-    [[self userAvatar] setImage:userAvatarImage];
+    NSString *gravatarId = [userInfo objectForKey:@"gravatar_id"];
+    
+    if (gravatarId) {
+        NSURL *gravatarURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.gravatar.com/avatar/%@?s=210", gravatarId]];
+        NSImage *userAvatarImage = [[NSImage alloc] initWithContentsOfURL:gravatarURL];
+        [[self userAvatar] setImage:userAvatarImage];
+    }
+    else {
+        // TODO insert dummy image into image well
+    }
     
     [[self userAuthenticateView] removeFromSuperview];
     [[self view] addSubview:[self userInfoView]];
