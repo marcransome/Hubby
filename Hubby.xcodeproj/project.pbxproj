@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		190C99991700F27200D33EA7 /* MRCreateRepositoryWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 190C99971700F27200D33EA7 /* MRCreateRepositoryWindowController.m */; };
-		190C999A1700F27200D33EA7 /* MRCreateRepositoryWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 190C99981700F27200D33EA7 /* MRCreateRepositoryWindow.xib */; };
 		192D5A7016F31BAD00E4DF19 /* events.icns in Resources */ = {isa = PBXBuildFile; fileRef = 192D5A6F16F31BAD00E4DF19 /* events.icns */; };
 		192D5A7A16F31C6400E4DF19 /* MREventsPreferencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 192D5A7816F31C6400E4DF19 /* MREventsPreferencesViewController.m */; };
 		192D5A7B16F31C6400E4DF19 /* MREventsPreferencesView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 192D5A7916F31C6400E4DF19 /* MREventsPreferencesView.xib */; };
+		196946C21708A95A00983433 /* MRCreateRepositoryWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 196946BF1708A95A00983433 /* MRCreateRepositoryWindow.xib */; };
+		196946C31708A95A00983433 /* MRCreateRepositoryWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 196946C11708A95A00983433 /* MRCreateRepositoryWindowController.m */; };
 		196B543B16F520FE000DA841 /* menu_highlight.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 196B543A16F520FE000DA841 /* menu_highlight.tiff */; };
 		196B543D16F5EE41000DA841 /* menu_icon.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 196B543C16F5EE41000DA841 /* menu_icon.tiff */; };
 		196B544216F71277000DA841 /* MRAccountPreferencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 196B544016F71277000DA841 /* MRAccountPreferencesViewController.m */; };
@@ -53,13 +53,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		190C99961700F27200D33EA7 /* MRCreateRepositoryWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MRCreateRepositoryWindowController.h; path = Interface/Gists/MRCreateRepositoryWindowController.h; sourceTree = "<group>"; };
-		190C99971700F27200D33EA7 /* MRCreateRepositoryWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MRCreateRepositoryWindowController.m; path = Interface/Gists/MRCreateRepositoryWindowController.m; sourceTree = "<group>"; };
-		190C99981700F27200D33EA7 /* MRCreateRepositoryWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MRCreateRepositoryWindow.xib; path = Interface/Gists/MRCreateRepositoryWindow.xib; sourceTree = "<group>"; };
 		192D5A6F16F31BAD00E4DF19 /* events.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = events.icns; path = "Resources/Toolbar Icons/events.icns"; sourceTree = "<group>"; };
 		192D5A7716F31C6400E4DF19 /* MREventsPreferencesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MREventsPreferencesViewController.h; path = Interface/Preferences/Views/Events/MREventsPreferencesViewController.h; sourceTree = "<group>"; };
 		192D5A7816F31C6400E4DF19 /* MREventsPreferencesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MREventsPreferencesViewController.m; path = Interface/Preferences/Views/Events/MREventsPreferencesViewController.m; sourceTree = "<group>"; };
 		192D5A7916F31C6400E4DF19 /* MREventsPreferencesView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MREventsPreferencesView.xib; path = Interface/Preferences/Views/Events/MREventsPreferencesView.xib; sourceTree = "<group>"; };
+		196946BF1708A95A00983433 /* MRCreateRepositoryWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MRCreateRepositoryWindow.xib; path = Interface/Repositories/MRCreateRepositoryWindow.xib; sourceTree = "<group>"; };
+		196946C01708A95A00983433 /* MRCreateRepositoryWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MRCreateRepositoryWindowController.h; path = Interface/Repositories/MRCreateRepositoryWindowController.h; sourceTree = "<group>"; };
+		196946C11708A95A00983433 /* MRCreateRepositoryWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MRCreateRepositoryWindowController.m; path = Interface/Repositories/MRCreateRepositoryWindowController.m; sourceTree = "<group>"; };
 		196B543A16F520FE000DA841 /* menu_highlight.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = menu_highlight.tiff; sourceTree = "<group>"; };
 		196B543C16F5EE41000DA841 /* menu_icon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = menu_icon.tiff; sourceTree = "<group>"; };
 		196B543F16F71277000DA841 /* MRAccountPreferencesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MRAccountPreferencesViewController.h; path = Interface/Preferences/Views/Account/MRAccountPreferencesViewController.h; sourceTree = "<group>"; };
@@ -115,19 +115,19 @@
 		190C99941700F1B000D33EA7 /* Interface */ = {
 			isa = PBXGroup;
 			children = (
-				190C99951700F1B600D33EA7 /* Gists */,
+				190C99951700F1B600D33EA7 /* Repositories */,
 			);
 			name = Interface;
 			sourceTree = "<group>";
 		};
-		190C99951700F1B600D33EA7 /* Gists */ = {
+		190C99951700F1B600D33EA7 /* Repositories */ = {
 			isa = PBXGroup;
 			children = (
-				190C99961700F27200D33EA7 /* MRCreateRepositoryWindowController.h */,
-				190C99971700F27200D33EA7 /* MRCreateRepositoryWindowController.m */,
-				190C99981700F27200D33EA7 /* MRCreateRepositoryWindow.xib */,
+				196946BF1708A95A00983433 /* MRCreateRepositoryWindow.xib */,
+				196946C01708A95A00983433 /* MRCreateRepositoryWindowController.h */,
+				196946C11708A95A00983433 /* MRCreateRepositoryWindowController.m */,
 			);
-			name = Gists;
+			name = Repositories;
 			sourceTree = "<group>";
 		};
 		192D5A7116F31C0500E4DF19 /* Events */ = {
@@ -376,7 +376,7 @@
 				196B544316F71277000DA841 /* MRAccountPreferencesView.xib in Resources */,
 				198E251A16FE7BAA00B4423F /* Octocat.png in Resources */,
 				198E251C16FE7C9D00B4423F /* Acknowledgements.rtf in Resources */,
-				190C999A1700F27200D33EA7 /* MRCreateRepositoryWindow.xib in Resources */,
+				196946C21708A95A00983433 /* MRCreateRepositoryWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -411,7 +411,7 @@
 				19A4BE0416F29D4A00E8BE63 /* MRUpdatePreferencesViewController.m in Sources */,
 				192D5A7A16F31C6400E4DF19 /* MREventsPreferencesViewController.m in Sources */,
 				196B544216F71277000DA841 /* MRAccountPreferencesViewController.m in Sources */,
-				190C99991700F27200D33EA7 /* MRCreateRepositoryWindowController.m in Sources */,
+				196946C31708A95A00983433 /* MRCreateRepositoryWindowController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
