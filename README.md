@@ -3,6 +3,7 @@ Hubby lives in your menu bar and notifies you when the little fix-it elves at [G
 
 ##Acknowledgements
 Hubby makes use of the following open source libraries and frameworks:
+* [OAuth2Client](https://github.com/nxtbgthng/OAuth2Client) by nxtbgthng
 * [JSONKit](https://github.com/johnezang/JSONKit) by John Engelhart
 * [Sparkle](https://github.com/andymatuschak/Sparkle) by Andy Matuschak
 * [CocoaLumberjack](https://github.com/robbiehanson/CocoaLumberjack) by Robbie Hanson
