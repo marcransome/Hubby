@@ -289,45 +289,43 @@ enum {
         DDLogVerbose(@"first status recorded (%@)", status);
     }
     else if (![status isEqualToString:_currentStatus]) {
-        
-        DDLogVerbose(@"status change detected (%@)", status);
-        
-        NSInteger notificationType = [[NSUserDefaults standardUserDefaults] integerForKey:@"NotificationsFor"];
-        
-        if ([status isEqualToString:@"good"])
-        {
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ServiceRestoredNotification"]) {
-                NSUserNotification *notification = [[NSUserNotification alloc] init];
-                [notification setTitle:@"GitHub Service Restored"];
-                [notification setInformativeText:message];
-                [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
-            }
-        }
-        if ([status isEqualToString:@"major"]) {
-            if (notificationType == MRMajorAndMinorNotifications || notificationType == MRMajorNotifications)
-            {
-                NSUserNotification *notification = [[NSUserNotification alloc] init];
-                [notification setTitle:@"GitHub Major Disruption"];
-                [notification setInformativeText:message];
-                [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
-            }
-        }
-        else if ([status isEqualToString:@"minor"]) {
-            if (notificationType == MRMajorAndMinorNotifications || notificationType == MRMinorNotifications)
-            {
-                NSUserNotification *notification = [[NSUserNotification alloc] init];
-                [notification setTitle:@"GitHub Minor Disruption"];
-                [notification setInformativeText:message];
-                [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate:self];
-                [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
-            }
-        }
-        
         _currentStatus = status;
+        DDLogVerbose(@"status change detected (%@)", status);
     }
     else
     {
         DDLogVerbose(@"no status change detected");
+    }
+    
+    NSInteger notificationType = [[NSUserDefaults standardUserDefaults] integerForKey:@"NotificationsFor"];
+    
+    if ([status isEqualToString:@"good"])
+    {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"ServiceRestoredNotification"]) {
+            NSUserNotification *notification = [[NSUserNotification alloc] init];
+            [notification setTitle:@"GitHub Service Restored"];
+            [notification setInformativeText:message];
+            [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
+        }
+    }
+    if ([status isEqualToString:@"major"]) {
+        if (notificationType == MRMajorAndMinorNotifications || notificationType == MRMajorNotifications)
+        {
+            NSUserNotification *notification = [[NSUserNotification alloc] init];
+            [notification setTitle:@"GitHub Major Disruption"];
+            [notification setInformativeText:message];
+            [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
+        }
+    }
+    else if ([status isEqualToString:@"minor"]) {
+        if (notificationType == MRMajorAndMinorNotifications || notificationType == MRMinorNotifications)
+        {
+            NSUserNotification *notification = [[NSUserNotification alloc] init];
+            [notification setTitle:@"GitHub Minor Disruption"];
+            [notification setInformativeText:message];
+            [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate:self];
+            [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
+        }
     }
 
     _waitingOnLastRequest = NO;
