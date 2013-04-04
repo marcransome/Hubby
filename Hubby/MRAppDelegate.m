@@ -71,6 +71,8 @@ enum {
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+    [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate:self];
+    
     // register url handler and observers for github callback
     [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(handleAppleEvent:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
     
@@ -323,7 +325,6 @@ enum {
             NSUserNotification *notification = [[NSUserNotification alloc] init];
             [notification setTitle:@"GitHub Minor Disruption"];
             [notification setInformativeText:message];
-            [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate:self];
             [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
         }
     }
@@ -504,6 +505,11 @@ enum {
     [[NSNotificationCenter defaultCenter] postNotificationName:MRAccountDeauthorised object:nil];
     [[self publicReposMenu] removeAllItems];
     [[self publicReposMenuItem] setEnabled:NO];
+}
+
+-(BOOL)userNotificationCenter:(NSUserNotificationCenter *)center shouldPresentNotification:(NSUserNotification *)notification
+{
+    return YES;
 }
 
 @end
