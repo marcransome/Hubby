@@ -713,19 +713,19 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
-						<string key="label">enabled: values.enableNotifications</string>
+						<string key="label">enabled: values.EnableNotifications</string>
 						<reference key="source" ref="737432657"/>
 						<reference key="destination" ref="353284822"/>
 						<object class="NSNibBindingConnector" key="connector">
 							<reference key="NSSource" ref="737432657"/>
 							<reference key="NSDestination" ref="353284822"/>
-							<string key="NSLabel">enabled: values.enableNotifications</string>
+							<string key="NSLabel">enabled: values.EnableNotifications</string>
 							<string key="NSBinding">enabled</string>
-							<string key="NSKeyPath">values.enableNotifications</string>
+							<string key="NSKeyPath">values.EnableNotifications</string>
 							<int key="NSNibBindingConnectorVersion">2</int>
 						</object>
 					</object>
-					<int key="connectionID">147</int>
+					<int key="connectionID">166</int>
 				</object>
 				<object class="IBConnectionRecord">
 					<object class="IBBindingConnection" key="connection">
@@ -1019,7 +1019,7 @@ AAMAAAABAAEAAAFTAAMAAAAEAAAFwgAAAAAACAAIAAgACAABAAEAAQABA</bytes>
 			<nil key="activeLocalization"/>
 			<dictionary class="NSMutableDictionary" key="localizations"/>
 			<nil key="sourceID"/>
-			<int key="maxID">165</int>
+			<int key="maxID">166</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<array class="NSMutableArray" key="referencedPartialClassDescriptions">
