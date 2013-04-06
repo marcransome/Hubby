@@ -430,6 +430,8 @@ enum {
                 
                 [self deauthoriseAccount:nil];
                 
+                [[NSNotificationCenter defaultCenter] postNotificationName:MRAccountDeauthorised object:nil];
+                
                 NSAlert *alert = [[NSAlert alloc] init];
                 [alert setMessageText:@"Hubby was unable to access GitHub.  Please authenticate again."];
                 [alert runModal];
@@ -502,7 +504,6 @@ enum {
 - (void)deauthoriseAccount:(NSNotification *)notification
 {
     // ensure account preference view is up to date
-    [[NSNotificationCenter defaultCenter] postNotificationName:MRAccountDeauthorised object:nil];
     [[self publicReposMenu] removeAllItems];
     [[self publicReposMenuItem] setEnabled:NO];
 }

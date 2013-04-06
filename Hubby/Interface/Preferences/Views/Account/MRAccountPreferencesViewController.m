@@ -45,9 +45,9 @@ extern int ddLogLevel;
 
 - (IBAction)authoriseAccount:(id)sender;
 - (IBAction)deauthoriseAccount:(id)sender;
-- (void)showProgress:(NSNotification*)notification;
-- (void)accountWasAuthorised:(NSNotification*)notification;
-- (void)accountWasDeauthorised:(NSNotification*)notification;
+- (void)showProgress:(NSNotification *)notification;
+- (void)accountWasAuthorised:(NSNotification *)notification;
+- (void)accountWasDeauthorised:(NSNotification *)notification;
 
 @end
 
@@ -105,7 +105,7 @@ extern int ddLogLevel;
 #pragma mark -
 #pragma mark Observer Methods
 
-- (void)accountWasAuthorised:(NSNotification*)notification
+- (void)accountWasAuthorised:(NSNotification *)notification
 {
     NSDictionary *userInfo = [notification object];
     
@@ -153,13 +153,14 @@ extern int ddLogLevel;
     }
 }
 
-- (void)accountWasDeauthorised:(NSNotification*)notification
-{
-    [[self userInfoView] removeFromSuperview];
-    [[self view] addSubview:[self userAuthenticateView]];
+- (void)accountWasDeauthorised:(NSNotification *)notification
+{ 
+    [[self authoriseButton] setEnabled:YES];
+    [[self progressIndicator] stopAnimation:nil];
+    [[self progressIndicator] setHidden:YES];
 }
 
-- (void)showProgress:(NSNotification*)notification
+- (void)showProgress:(NSNotification *)notification
 {
     [[self authoriseButton] setEnabled:NO];
     [[self progressIndicator] setHidden:NO];
