@@ -297,6 +297,7 @@ enum {
     else
     {
         DDLogVerbose(@"no status change detected");
+        return;
     }
     
     NSInteger notificationType = [[NSUserDefaults standardUserDefaults] integerForKey:@"NotificationsFor"];
