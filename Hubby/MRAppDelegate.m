@@ -33,7 +33,6 @@
 NSString* const MRAccountAuthorised = @"MRAccountAuthorised";
 NSString* const MRAccountDeauthorised = @"MRAccountDeauthorised";
 NSString* const MRWaitingOnApiRequest = @"MRWaitingOnApiRequest";
-NSString* const MRReceivedApiResponse = @"MRReceivedApiResponse";
 NSString* const MRUserDidDeauthorise = @"MRUserDidDeauthorise";
 
 #pragma mark Logging
@@ -447,8 +446,6 @@ enum {
             
             [self requestRepos];
         }
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:MRReceivedApiResponse object:nil];
     }];
 }
 

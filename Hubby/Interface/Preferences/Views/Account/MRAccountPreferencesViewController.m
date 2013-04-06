@@ -29,7 +29,6 @@
 extern NSString* const MRAccountAuthorised;
 extern NSString* const MRAccountDeauthorised;
 extern NSString* const MRWaitingOnApiRequest;
-extern NSString* const MRReceivedApiResponse;
 extern NSString* const MRUserDidDeauthorise;
 
 extern int ddLogLevel;
@@ -47,7 +46,6 @@ extern int ddLogLevel;
 - (IBAction)authoriseAccount:(id)sender;
 - (IBAction)deauthoriseAccount:(id)sender;
 - (void)showProgress:(NSNotification*)notification;
-- (void)stopProgress:(NSNotification*)notification;
 - (void)accountWasAuthorised:(NSNotification*)notification;
 - (void)accountWasDeauthorised:(NSNotification*)notification;
 
@@ -77,11 +75,7 @@ extern int ddLogLevel;
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(showProgress:)
                                                      name:MRWaitingOnApiRequest object:nil];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(stopProgress:)
-                                                     name:MRReceivedApiResponse object:nil];
-        
+            
         [[self view] addSubview:[self userAuthenticateView]];
     }
     
@@ -137,13 +131,18 @@ extern int ddLogLevel;
             if ([data length] > 0 && error == nil) {
                 NSImage *userAvatarImage = [[NSImage alloc] initWithData:data];
                 [[self userAvatar] setImage:userAvatarImage];
-                
-                [[self userAuthenticateView] removeFromSuperview];
-                [[self view] addSubview:[self userInfoView]];
             }
             else {
                 // TODO failed request, give up for this session and display dummy user image
+                //[[self userAvatar] setImage:dummyAvatarImage];
             }
+            
+            [[self userAuthenticateView] removeFromSuperview];
+            [[self view] addSubview:[self userInfoView]];
+            
+            [[self authoriseButton] setEnabled:YES];
+            [[self progressIndicator] stopAnimation:nil];
+            [[self progressIndicator] setHidden:YES];
         }];
     }
     else {
@@ -165,13 +164,6 @@ extern int ddLogLevel;
     [[self authoriseButton] setEnabled:NO];
     [[self progressIndicator] setHidden:NO];
     [[self progressIndicator] startAnimation:nil];
-}
-
-- (void)stopProgress:(NSNotification*)notification
-{
-    [[self authoriseButton] setEnabled:YES];
-    [[self progressIndicator] stopAnimation:nil];
-    [[self progressIndicator] setHidden:YES];
 }
 
 @end
