@@ -104,56 +104,55 @@ extern NSString* ddLogLevel;
 
     [NSURLConnection sendAsynchronousRequest:signedRequest queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
         
-        NSLog(@"wooo %d", [NSThread isMainThread]);
-        
-        [[self progressIndicator] stopAnimation:nil];
-        [[self progressIndicator] setHidden:YES];
-        
-        // POST was successful, but api request may still have failed
-        
-//        NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-//        NSDictionary *dataDict = [dataString objectFromJSONString];
-//        NSDictionary *errorsDict = [dataDict objectForKey:@"errors"];
-//        
-//        if (errorsArray) {
-//            if (errorsArray obj) {
-//                <#statements#>
-//            }
-//        }
-//        
-//        DDLogVerbose("%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
-        
-        
-        
-        
-        NSLog(@"%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
-        
-        // ONLY if successful
-        
-        
-        
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"openAfterCreateRepo"])
-        {
-            NSURL *repoURL = [NSURL URLWithString:[[data objectFromJSONData] objectForKey:@"html_url"]];
+        if ([data length] > 0 && error == nil) {
             
-            NSLog(@"%@", repoURL);
-            [[NSWorkspace sharedWorkspace] openURL:repoURL];
-        }
-        
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"copyAfterCreateRepo"])
-        {
-            NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
-            [pasteboard clearContents];
-         
-            NSURL *repoURL = [NSURL URLWithString:[[data objectFromJSONData] objectForKey:@"html_url"]];
-            NSArray *pasteboardArray = @[repoURL];
+            [[self progressIndicator] stopAnimation:nil];
+            [[self progressIndicator] setHidden:YES];
             
-            [pasteboard writeObjects:pasteboardArray];
+            // POST was successful, but api request may still have failed
+            
+            NSDictionary *dataDict = [data objectFromJSONData];
+            NSArray *errorsArray = [dataDict objectForKey:@"errors"];
+            
+            if (errorsArray) {
+                
+                NSString *errorString = @"The following error(s) occured:";
+                
+                for (NSDictionary *errorDict in errorsArray) {
+                    errorString = [errorString stringByAppendingString:[NSString stringWithFormat:@"\n\u2022 %@", [errorDict objectForKey:@"message"]]];
+                }
+
+                NSAlert *alert = [NSAlert alertWithMessageText:@"Creation failed" defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", errorString];
+                
+                [alert beginSheetModalForWindow:[self window] modalDelegate:nil didEndSelector:nil contextInfo:nil];
+                
+            }
+            else {
+                NSLog(@"%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+
+                if ([[NSUserDefaults standardUserDefaults] boolForKey:@"openAfterCreateRepo"])
+                {
+                    NSURL *repoURL = [NSURL URLWithString:[[data objectFromJSONData] objectForKey:@"html_url"]];
+                    
+                    NSLog(@"%@", repoURL);
+                    [[NSWorkspace sharedWorkspace] openURL:repoURL];
+                }
+                
+                if ([[NSUserDefaults standardUserDefaults] boolForKey:@"copyAfterCreateRepo"])
+                {
+                    NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
+                    [pasteboard clearContents];
+                 
+                    NSURL *repoURL = [NSURL URLWithString:[[data objectFromJSONData] objectForKey:@"html_url"]];
+                    NSArray *pasteboardArray = @[repoURL];
+                    
+                    [pasteboard writeObjects:pasteboardArray];
+                }
+                
+                [self close];
+            }
         }
     }];
-
-    
-
 }
     
 @end
