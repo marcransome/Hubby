@@ -284,11 +284,13 @@ enum {
     [_hubbyStatusItem setTitle:[NSString stringWithFormat:@"Last check: %@", [resultsDictionary objectForKey:@"time"]]];
     
     NSString *status = [resultsDictionary objectForKey:@"status"];
-    NSString *message = [resultsDictionary objectForKey:@"message"];
     
     if (!_currentStatus) {
         _currentStatus = status;
         DDLogVerbose(@"first status recorded (%@)", status);
+        
+        if ([status isEqualToString:@"good"])
+            return;
     }
     else if (![status isEqualToString:_currentStatus]) {
         _currentStatus = status;
@@ -300,7 +302,10 @@ enum {
         return;
     }
     
+    // either status change was detected or first status indicated minor/major disruption
+    
     NSInteger notificationType = [[NSUserDefaults standardUserDefaults] integerForKey:@"NotificationsFor"];
+    NSString *message = [resultsDictionary objectForKey:@"message"];
     
     if ([status isEqualToString:@"good"])
     {
