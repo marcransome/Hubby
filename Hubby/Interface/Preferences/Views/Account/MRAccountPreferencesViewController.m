@@ -22,6 +22,7 @@
 
 #import "MRAccountPreferencesViewController.h"
 #import <NXOAuth2AccountStore.h>
+#import <DDLog.h>
 
 #pragma mark Externals
 
@@ -30,6 +31,8 @@ extern NSString* const MRAccountDeauthorised;
 extern NSString* const MRWaitingOnApiRequest;
 extern NSString* const MRReceivedApiResponse;
 extern NSString* const MRUserDidDeauthorise;
+
+extern int ddLogLevel;
 
 @interface MRAccountPreferencesViewController ()
 
@@ -126,15 +129,29 @@ extern NSString* const MRUserDidDeauthorise;
     
     if (gravatarId) {
         NSURL *gravatarURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.gravatar.com/avatar/%@?s=210", gravatarId]];
-        NSImage *userAvatarImage = [[NSImage alloc] initWithContentsOfURL:gravatarURL];
-        [[self userAvatar] setImage:userAvatarImage];
+
+        NSURLRequest *request = [NSURLRequest requestWithURL:gravatarURL];
+        
+        [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+            
+            if ([data length] > 0 && error == nil) {
+                NSImage *userAvatarImage = [[NSImage alloc] initWithData:data];
+                [[self userAvatar] setImage:userAvatarImage];
+                
+                [[self userAuthenticateView] removeFromSuperview];
+                [[self view] addSubview:[self userInfoView]];
+            }
+            else {
+                // TODO failed request, give up for this session and display dummy user image
+            }
+        }];
     }
     else {
-        // TODO insert dummy image into image well
+        // TODO insert dummy user image into image well
+        
+        [[self userAuthenticateView] removeFromSuperview];
+        [[self view] addSubview:[self userInfoView]];
     }
-    
-    [[self userAuthenticateView] removeFromSuperview];
-    [[self view] addSubview:[self userInfoView]];
 }
 
 - (void)accountWasDeauthorised:(NSNotification*)notification
