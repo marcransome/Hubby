@@ -110,7 +110,6 @@ enum {
     
     // clear old notications
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"RemoveOldNotifications"]) {
-        NSLog(@"removing");
         [[NSUserNotificationCenter defaultUserNotificationCenter] removeAllDeliveredNotifications];
     }
     
@@ -403,14 +402,12 @@ enum {
 - (void)handleAppleEvent:(NSAppleEventDescriptor *)event withReplyEvent: (NSAppleEventDescriptor *)replyEvent
 {
     if ([[event description] rangeOfString:@"error"].location == NSNotFound) {
-        NSLog(@"%@ %@", [event description], [replyEvent description]);
         [[NSNotificationCenter defaultCenter] postNotificationName:MRWaitingOnApiRequest object:nil];
         
         NSURL *url = [NSURL URLWithString:[[event paramDescriptorForKeyword:keyDirectObject] stringValue]];
         DDLogVerbose(@"callback received (%@)", url);
         
         [[NXOAuth2AccountStore sharedStore] handleRedirectURL:url];
-        NSLog(@"%@,", url);
     }
 }
 

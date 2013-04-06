@@ -105,7 +105,6 @@ extern NSString* ddLogLevel;
         [jsonPayload setObject:[NSNumber numberWithBool:YES] forKey:@"auto_init"];
     
     NSLog(@"%@", [jsonPayload JSONString]);
-
     
     NXOAuth2Request *request = [[NXOAuth2Request alloc] initWithResource:[NSURL URLWithString:@"https://api.github.com/user/repos"]
                                                                      method:@"POST"
@@ -147,8 +146,6 @@ extern NSString* ddLogLevel;
                 if ([[NSUserDefaults standardUserDefaults] boolForKey:@"openAfterCreateRepo"])
                 {
                     NSURL *repoURL = [NSURL URLWithString:[[data objectFromJSONData] objectForKey:@"html_url"]];
-                    
-                    NSLog(@"%@", repoURL);
                     [[NSWorkspace sharedWorkspace] openURL:repoURL];
                 }
                 
