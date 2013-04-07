@@ -78,7 +78,6 @@ extern NSString* ddLogLevel;
     // TODO error checks
     
     for (NSString *language in [fileContents componentsSeparatedByString:@"\n"]) {
-        NSLog(@"%@", language);
         if ([language length] > 0) {
             [[self gitignorePopUp] addItemWithTitle:language];
         }
