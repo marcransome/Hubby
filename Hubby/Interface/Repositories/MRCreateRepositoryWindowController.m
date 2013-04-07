@@ -87,8 +87,9 @@ extern NSString* ddLogLevel;
 
 - (IBAction)createRepository:(id)sender
 {
-    [_progressIndicator setHidden:NO];
-    [_progressIndicator startAnimation:nil];
+    [[self progressIndicator] setHidden:NO];
+    [[self progressIndicator] startAnimation:nil];
+    [[self createButton] setEnabled:NO];
 
     NSMutableDictionary *jsonPayload = [NSMutableDictionary dictionary];
     
@@ -138,11 +139,11 @@ extern NSString* ddLogLevel;
 
     [NSURLConnection sendAsynchronousRequest:signedRequest queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
         
+        [[self progressIndicator] stopAnimation:nil];
+        [[self progressIndicator] setHidden:YES];
+        [[self createButton] setEnabled:YES];
+        
         if ([data length] > 0 && error == nil) {
-            
-            [[self progressIndicator] stopAnimation:nil];
-            [[self progressIndicator] setHidden:YES];
-            
             // POST was successful, but api request may still have failed
             
             NSDictionary *dataDict = [data objectFromJSONData];
