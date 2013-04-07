@@ -92,7 +92,6 @@
 							<string key="NSFrame">{{382, 13}, {81, 32}}</string>
 							<reference key="NSSuperview" ref="1006"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="1038277604">
@@ -221,7 +220,6 @@
 							<string key="NSFrame">{{13, 39}, {451, 282}}</string>
 							<reference key="NSSuperview" ref="1006"/>
 							<reference key="NSWindow"/>
-							<reference key="NSNextKeyView" ref="93529757"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<array class="NSMutableArray" key="NSTabViewItems">
 								<object class="NSTabViewItem" id="569260898">
@@ -449,7 +447,7 @@
 											<object class="NSPopUpButton" id="525712499">
 												<reference key="NSNextResponder" ref="93529757"/>
 												<int key="NSvFlags">268</int>
-												<string key="NSFrame">{{238, 10}, {132, 26}}</string>
+												<string key="NSFrame">{{235, 10}, {135, 26}}</string>
 												<reference key="NSSuperview" ref="93529757"/>
 												<reference key="NSWindow"/>
 												<reference key="NSNextKeyView" ref="107439849"/>
@@ -515,7 +513,7 @@
 											<object class="NSTextField" id="602538532">
 												<reference key="NSNextResponder" ref="93529757"/>
 												<int key="NSvFlags">268</int>
-												<string key="NSFrame">{{133, 16}, {102, 17}}</string>
+												<string key="NSFrame">{{133, 15}, {99, 17}}</string>
 												<reference key="NSSuperview" ref="93529757"/>
 												<reference key="NSWindow"/>
 												<reference key="NSNextKeyView" ref="525712499"/>
@@ -524,7 +522,7 @@
 												<object class="NSTextFieldCell" key="NSCell" id="211387296">
 													<int key="NSCellFlags">68157504</int>
 													<int key="NSCellFlags2">272630784</int>
-													<string key="NSContents">With .gitignore:</string>
+													<string key="NSContents">Add .gitignore:</string>
 													<reference key="NSSupport" ref="1060176336"/>
 													<string key="NSCellIdentifier">_NS:1535</string>
 													<reference key="NSControlView" ref="602538532"/>
