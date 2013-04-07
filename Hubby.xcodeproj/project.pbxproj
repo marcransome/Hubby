@@ -33,6 +33,7 @@
 		19A4BE0016F289E800E8BE63 /* Defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 19A4BDFF16F289E800E8BE63 /* Defaults.plist */; };
 		19A4BE0416F29D4A00E8BE63 /* MRUpdatePreferencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19A4BE0216F29D4A00E8BE63 /* MRUpdatePreferencesViewController.m */; };
 		19A4BE0516F29D4A00E8BE63 /* MRUpdatePreferencesView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19A4BE0316F29D4A00E8BE63 /* MRUpdatePreferencesView.xib */; };
+		19AD4DF01710E005006E79A8 /* gitignore.txt in Resources */ = {isa = PBXBuildFile; fileRef = 19AD4DEE1710DAB7006E79A8 /* gitignore.txt */; };
 		19C145A816F3DC30007AEC14 /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 19C145A716F3DC30007AEC14 /* Sparkle.framework */; };
 		19C145AA16F3DC8D007AEC14 /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 19C145A716F3DC30007AEC14 /* Sparkle.framework */; };
 		19C145AC16F3E689007AEC14 /* hubby.pem in Resources */ = {isa = PBXBuildFile; fileRef = 19C145AB16F3E689007AEC14 /* hubby.pem */; };
@@ -92,6 +93,7 @@
 		19A4BE0116F29D4A00E8BE63 /* MRUpdatePreferencesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MRUpdatePreferencesViewController.h; path = Interface/Preferences/Views/Update/MRUpdatePreferencesViewController.h; sourceTree = "<group>"; };
 		19A4BE0216F29D4A00E8BE63 /* MRUpdatePreferencesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MRUpdatePreferencesViewController.m; path = Interface/Preferences/Views/Update/MRUpdatePreferencesViewController.m; sourceTree = "<group>"; };
 		19A4BE0316F29D4A00E8BE63 /* MRUpdatePreferencesView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MRUpdatePreferencesView.xib; path = Interface/Preferences/Views/Update/MRUpdatePreferencesView.xib; sourceTree = "<group>"; };
+		19AD4DEE1710DAB7006E79A8 /* gitignore.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = gitignore.txt; path = Resources/gitignore.txt; sourceTree = "<group>"; };
 		19C145A716F3DC30007AEC14 /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = "<group>"; };
 		19C145AB16F3E689007AEC14 /* hubby.pem */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = hubby.pem; path = Resources/hubby.pem; sourceTree = "<group>"; };
 		1C1F9D064C5741D69CD6EF51 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
@@ -143,6 +145,7 @@
 		196092EB16F2A4E9002F8C8D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				19AD4DEE1710DAB7006E79A8 /* gitignore.txt */,
 				198E251916FE7BAA00B4423F /* Octocat.png */,
 				196092EC16F2A4EE002F8C8D /* Toolbar Icons */,
 				196092ED16F2A4FD002F8C8D /* Status Images */,
@@ -359,6 +362,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				19AD4DF01710E005006E79A8 /* gitignore.txt in Resources */,
 				19A4BDC916F2639400E8BE63 /* InfoPlist.strings in Resources */,
 				19A4BDCF16F2639400E8BE63 /* Credits.rtf in Resources */,
 				19A4BDD516F2639400E8BE63 /* MainMenu.xib in Resources */,

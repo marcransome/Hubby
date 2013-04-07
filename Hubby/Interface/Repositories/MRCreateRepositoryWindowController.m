@@ -39,6 +39,7 @@ extern NSString* ddLogLevel;
 @property (weak) IBOutlet NSButton *initialiseRepository;
 @property (weak) IBOutlet NSProgressIndicator *progressIndicator;
 @property (weak) IBOutlet NSButton *createButton;
+@property (weak) IBOutlet NSPopUpButton *gitignorePopUp;
 
 - (IBAction)createRepository:(id)sender;
 
@@ -66,6 +67,22 @@ extern NSString* ddLogLevel;
     [super windowDidLoad];
     
     // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
+    NSString *gitignoreFile = [[NSBundle mainBundle] pathForResource:@"gitignore" ofType:@"txt"];
+
+    NSStringEncoding encoding;
+    NSError *error;
+    NSString *fileContents = [[NSString alloc] initWithContentsOfFile:gitignoreFile
+                                                          usedEncoding:&encoding
+                                                                 error:&error];
+    
+    // TODO error checks
+    
+    for (NSString *language in [fileContents componentsSeparatedByString:@"\n"]) {
+        NSLog(@"%@", language);
+        if ([language length] > 0) {
+            [[self gitignorePopUp] addItemWithTitle:language];
+        }
+    }
 }
 
 - (IBAction)createRepository:(id)sender
@@ -101,8 +118,12 @@ extern NSString* ddLogLevel;
         [jsonPayload setObject:[NSNumber numberWithBool:YES] forKey:@"has_wiki"];
     if ([[self enableDownloads] state] == NSOnState)
         [jsonPayload setObject:[NSNumber numberWithBool:YES] forKey:@"has_downloads"];
-    if ([[self initialiseRepository] state] == NSOnState)
+    if ([[self initialiseRepository] state] == NSOnState) {
         [jsonPayload setObject:[NSNumber numberWithBool:YES] forKey:@"auto_init"];
+        if (![[[[self gitignorePopUp] selectedItem] title] isEqualToString:@"None"]) {
+            [jsonPayload setObject:[[[self gitignorePopUp] selectedItem] title] forKey:@"gitignore_template"];
+        }
+    }
     
     NSLog(@"%@", [jsonPayload JSONString]);
     
