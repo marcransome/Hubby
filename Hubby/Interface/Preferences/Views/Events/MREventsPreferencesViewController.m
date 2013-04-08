@@ -8,6 +8,8 @@
 
 #import "MREventsPreferencesViewController.h"
 
+extern NSString* const MRNotificationsEnabledChanged;
+
 @interface MREventsPreferencesViewController ()
 
 @property (weak) IBOutlet NSTextField *checkFrequencyLabel;
@@ -51,6 +53,8 @@
         [[self checkFrequencyLabel] setTextColor:[NSColor disabledControlTextColor]];
         [[self checkMinutesLabel] setTextColor:[NSColor disabledControlTextColor]];
     }
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:MRNotificationsEnabledChanged object:nil];
 }
 
 @end

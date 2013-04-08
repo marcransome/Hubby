@@ -34,6 +34,7 @@ NSString* const MRAccountAuthorised = @"MRAccountAuthorised";
 NSString* const MRAccountDeauthorised = @"MRAccountDeauthorised";
 NSString* const MRWaitingOnApiRequest = @"MRWaitingOnApiRequest";
 NSString* const MRUserDidDeauthorise = @"MRUserDidDeauthorise";
+NSString* const MRNotificationsEnabledChanged = @"MRNotificationsEnabledChanged";
 
 static BOOL hubbyIsAuthorised = NO;
 
@@ -157,18 +158,15 @@ enum {
                                              name:@"RepeatIntervalChanged"
                                            object:nil];
     
-    // status timer setup
-    NSTimeInterval repeatIntervalInSeconds = [[NSUserDefaults standardUserDefaults] integerForKey:@"RepeatInterval"] * 60.0;
+    // observer for repeat interval preference
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(notificationsEnabledPrefDidChange)
+                                                 name:MRNotificationsEnabledChanged
+                                               object:nil];
     
-    DDLogVerbose(@"repeat interval on startup is %.2fs", repeatIntervalInSeconds);
-    
-    _statusTimer = [NSTimer scheduledTimerWithTimeInterval:(repeatIntervalInSeconds <= 60.0 ? 60.0 : repeatIntervalInSeconds)
-                                                target:self
-                                              selector:@selector(updateHubby:)
-                                              userInfo:nil
-                                               repeats:YES];
+    // trigger status timer startup (dependent on user defaults)
+    [self notificationsEnabledPrefDidChange];
 
-    [_statusTimer fire];
 }
 
 - (IBAction)updateHubby:(id)sender
@@ -281,6 +279,8 @@ enum {
 
 - (void)pollFinished:(NSDictionary *)resultsDictionary
 {
+    _waitingOnLastRequest = NO;
+    
     [_hubbyStatusItem setTitle:[NSString stringWithFormat:@"Last check: %@", [resultsDictionary objectForKey:@"time"]]];
     
     NSString *status = [resultsDictionary objectForKey:@"status"];
@@ -334,8 +334,6 @@ enum {
             [[NSUserNotificationCenter defaultUserNotificationCenter] deliverNotification:notification];
         }
     }
-
-    _waitingOnLastRequest = NO;
 }
 
 - (void)pollErrored
@@ -529,6 +527,28 @@ enum {
     NSAlert *alert = [[NSAlert alloc] init];
     [alert setMessageText:@"Hubby was unable to access GitHub.  Please authenticate again."];
     [alert runModal];
+}
+
+- (void)notificationsEnabledPrefDidChange
+{
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"EnableNotifications"]) {
+        NSTimeInterval repeatIntervalInSeconds = [[NSUserDefaults standardUserDefaults] integerForKey:@"RepeatInterval"] * 60.0;
+        
+        DDLogVerbose(@"starting status timer with interval %.2fs", repeatIntervalInSeconds);
+        
+        _statusTimer = [NSTimer scheduledTimerWithTimeInterval:(repeatIntervalInSeconds <= 60.0 ? 60.0 : repeatIntervalInSeconds)
+                                                        target:self
+                                                      selector:@selector(updateHubby:)
+                                                      userInfo:nil
+                                                       repeats:YES];
+        
+        [_statusTimer fire];
+    }
+    else {
+        DDLogVerbose(@"stopping status timer");
+        _currentStatus = nil;
+        [_statusTimer invalidate];
+    }
 }
 
 @end
