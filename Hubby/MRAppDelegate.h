@@ -56,6 +56,7 @@
 - (void)requestApi;
 - (void)requestRepos;
 - (void)openRepo:(id)sender;
+- (void)userDidRevokeAccess;
 
 - (void)deauthoriseAccount:(NSNotification *)notification;
 

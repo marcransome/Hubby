@@ -426,21 +426,7 @@ enum {
             
             if ([error code] >= 401 && [error code] <= 404)
             {
-                // user likely revoked our access
-                DDLogError(@"401-404 error: no longer authorised, removing accounts");
-                
-                for (NXOAuth2Account *account in [[NXOAuth2AccountStore sharedStore] accountsWithAccountType:@"GitHub"]) {
-                    [[NXOAuth2AccountStore sharedStore] removeAccount:account];
-                };
-                
-                [self deauthoriseAccount:nil];
-                
-                [[NSNotificationCenter defaultCenter] postNotificationName:MRAccountDeauthorised object:nil];
-                
-                NSAlert *alert = [[NSAlert alloc] init];
-                [alert setMessageText:@"Hubby was unable to access GitHub.  Please authenticate again."];
-                [alert runModal];
-
+                [self userDidRevokeAccess];
                 return;
             }
             else {
@@ -479,20 +465,8 @@ enum {
             
             if ([error code] >= 401 && [error code] <= 404)
             {
-                // user likely revoked our access
-                DDLogError(@"401-404 error: no longer authorised, removing accounts");
-                
-                for (NXOAuth2Account *account in [[NXOAuth2AccountStore sharedStore] accountsWithAccountType:@"GitHub"]) {
-                    [[NXOAuth2AccountStore sharedStore] removeAccount:account];
-                };
-                
-                [self deauthoriseAccount:nil];
-                
-                [[NSNotificationCenter defaultCenter] postNotificationName:MRAccountDeauthorised object:nil];
-                
-                NSAlert *alert = [[NSAlert alloc] init];
-                [alert setMessageText:@"Hubby was unable to access GitHub.  Please authenticate again."];
-                [alert runModal];
+                [self userDidRevokeAccess];
+                return;
             }
             else {
                 // TODO handle other error types
@@ -535,9 +509,26 @@ enum {
     DDLogVerbose(@"stopped public repos timer");
 }
 
--(BOOL)userNotificationCenter:(NSUserNotificationCenter *)center shouldPresentNotification:(NSUserNotification *)notification
+- (BOOL)userNotificationCenter:(NSUserNotificationCenter *)center shouldPresentNotification:(NSUserNotification *)notification
 {
     return YES;
+}
+
+- (void)userDidRevokeAccess
+{
+    DDLogError(@"401-404 error: no longer authorised, removing accounts");
+    
+    for (NXOAuth2Account *account in [[NXOAuth2AccountStore sharedStore] accountsWithAccountType:@"GitHub"]) {
+        [[NXOAuth2AccountStore sharedStore] removeAccount:account];
+    };
+    
+    [self deauthoriseAccount:nil];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:MRAccountDeauthorised object:nil];
+    
+    NSAlert *alert = [[NSAlert alloc] init];
+    [alert setMessageText:@"Hubby was unable to access GitHub.  Please authenticate again."];
+    [alert runModal];
 }
 
 @end
