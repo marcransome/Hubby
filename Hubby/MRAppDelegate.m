@@ -35,6 +35,8 @@ NSString* const MRAccountDeauthorised = @"MRAccountDeauthorised";
 NSString* const MRWaitingOnApiRequest = @"MRWaitingOnApiRequest";
 NSString* const MRUserDidDeauthorise = @"MRUserDidDeauthorise";
 
+static BOOL hubbyIsAuthorised = NO;
+
 #pragma mark Logging
 
 int ddLogLevel = LOG_LEVEL_VERBOSE;
@@ -82,6 +84,7 @@ enum {
                                                       // this block may be triggered by events other than account authentication (e.g. account removal)
                                                       // so we must test for the existence of NXOAuth2AccountStoreNewAccountUserInfoKey
                                                       if ([[notification userInfo] objectForKey:@"NXOAuth2AccountStoreNewAccountUserInfoKey"]) {
+                                                          hubbyIsAuthorised = YES;
                                                           [self requestApi];
                                                       }
                                                   }];
@@ -92,6 +95,7 @@ enum {
                                                   usingBlock:^(NSNotification *aNotification) {
                                                       NSError *error = [aNotification.userInfo objectForKey:NXOAuth2AccountStoreErrorKey];
                                                       DDLogVerbose(@"GitHub authentication failed!");
+                                                      hubbyIsAuthorised = NO;
                                                   }];
     
     // configure loggers
@@ -131,7 +135,6 @@ enum {
                                              selector:@selector(deauthoriseAccount:)
                                                  name:MRUserDidDeauthorise object:nil];
     
-    
     // menu item setup
     _hubbyMenuItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSSquareStatusItemLength];
     
@@ -154,7 +157,7 @@ enum {
                                              name:@"RepeatIntervalChanged"
                                            object:nil];
     
-    // refresh timer setup
+    // status timer setup
     NSTimeInterval repeatIntervalInSeconds = [[NSUserDefaults standardUserDefaults] integerForKey:@"RepeatInterval"] * 60.0;
     
     DDLogVerbose(@"repeat interval on startup is %.2fs", repeatIntervalInSeconds);
@@ -166,7 +169,6 @@ enum {
                                                repeats:YES];
 
     [_statusTimer fire];
-    
 }
 
 - (IBAction)updateHubby:(id)sender
@@ -400,13 +402,16 @@ enum {
 
 - (void)handleAppleEvent:(NSAppleEventDescriptor *)event withReplyEvent: (NSAppleEventDescriptor *)replyEvent
 {
-    if ([[event description] rangeOfString:@"error"].location == NSNotFound) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:MRWaitingOnApiRequest object:nil];
-        
-        NSURL *url = [NSURL URLWithString:[[event paramDescriptorForKeyword:keyDirectObject] stringValue]];
-        DDLogVerbose(@"callback received (%@)", url);
-        
-        [[NXOAuth2AccountStore sharedStore] handleRedirectURL:url];
+    // ignore repeated callbacks while authorised or attempting authorisation
+    if (hubbyIsAuthorised == NO) {
+        if ([[event description] rangeOfString:@"error"].location == NSNotFound) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:MRWaitingOnApiRequest object:nil];
+            
+            NSURL *url = [NSURL URLWithString:[[event paramDescriptorForKeyword:keyDirectObject] stringValue]];
+            DDLogVerbose(@"callback received (%@)", url);
+            
+            [[NXOAuth2AccountStore sharedStore] handleRedirectURL:url];
+        }
     }
 }
 
@@ -435,24 +440,36 @@ enum {
                 NSAlert *alert = [[NSAlert alloc] init];
                 [alert setMessageText:@"Hubby was unable to access GitHub.  Please authenticate again."];
                 [alert runModal];
+
+                return;
             }
             else {
                  // TODO handle other error types
+                DDLogError(@"an unhandled api request error occured (%li: %@)", [error code], [error description]);
+                return;
             }
-            
-            DDLogError(@"an api request error occured (%li: %@)", [error code], [error description]);
         }
         else {
-            DDLogVerbose(@"%@", results);
+            hubbyIsAuthorised = YES;
+            
             [[NSNotificationCenter defaultCenter] postNotificationName:MRAccountAuthorised object:results];
             
-            [self requestRepos];
+            DDLogVerbose(@"starting public repos timer");
+            
+            [self setPublicRepoTimer:[NSTimer scheduledTimerWithTimeInterval:60.0
+                                                                      target:self
+                                                                    selector:@selector(requestRepos)
+                                                                    userInfo:nil
+                                                                     repeats:YES]];
+            [[self publicRepoTimer] fire];
         }
     }];
 }
 
 - (void)requestRepos
 {
+    DDLogVerbose(@"requesting public repos");
+    
     [NXOAuth2Request performMethod:@"GET" onResource:[NSURL URLWithString:@"https://api.github.com/user/repos"] usingParameters:nil withAccount:[[[NXOAuth2AccountStore sharedStore] accountsWithAccountType:@"GitHub"] lastObject] sendProgressHandler:^(unsigned long long bytesSend, unsigned long long bytesTotal) {
         // silent
     } responseHandler:^(NSURLResponse *response, NSData *responseData, NSError *error) {
@@ -471,18 +488,20 @@ enum {
                 
                 [self deauthoriseAccount:nil];
                 
+                [[NSNotificationCenter defaultCenter] postNotificationName:MRAccountDeauthorised object:nil];
+                
                 NSAlert *alert = [[NSAlert alloc] init];
                 [alert setMessageText:@"Hubby was unable to access GitHub.  Please authenticate again."];
                 [alert runModal];
             }
             else {
                 // TODO handle other error types
+                DDLogError(@"an unhandled repos request error occured (%li: %@)", [error code], [error description]);
             }
-            
-            DDLogError(@"repos request error occured (%li: %@)", [error code], [error description]);
         }
         else {
-
+            [[self publicReposMenu] removeAllItems];
+            
             if ([results count] > 0) {
                 [[self publicReposMenuItem] setEnabled:YES];
                 for (NSDictionary *repo in results) {
@@ -491,6 +510,9 @@ enum {
                     [[self publicReposMenu] addItem:menuItem];
                     [menuItem setTarget:self];
                 }
+            }
+            else {
+                [[self publicReposMenuItem] setEnabled:NO];
             }
         }
     }];
@@ -503,9 +525,14 @@ enum {
 
 - (void)deauthoriseAccount:(NSNotification *)notification
 {
-    // ensure account preference view is up to date
+    hubbyIsAuthorised = NO;
+    
+    // update public repos menu item
     [[self publicReposMenu] removeAllItems];
     [[self publicReposMenuItem] setEnabled:NO];
+    [[self publicRepoTimer] invalidate];
+    
+    DDLogVerbose(@"stopped public repos timer");
 }
 
 -(BOOL)userNotificationCenter:(NSUserNotificationCenter *)center shouldPresentNotification:(NSUserNotification *)notification

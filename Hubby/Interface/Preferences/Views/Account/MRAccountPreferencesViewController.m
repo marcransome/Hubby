@@ -158,6 +158,9 @@ extern int ddLogLevel;
     [[self authoriseButton] setEnabled:YES];
     [[self progressIndicator] stopAnimation:nil];
     [[self progressIndicator] setHidden:YES];
+
+    [[self userInfoView] removeFromSuperview];
+    [[self view] addSubview:[self userAuthenticateView]];
 }
 
 - (void)showProgress:(NSNotification *)notification

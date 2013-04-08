@@ -34,6 +34,7 @@
 @property (weak) IBOutlet NSMenuItem *publicReposMenuItem;
 @property (weak) IBOutlet NSMenu *publicReposMenu;
 @property (strong) NSTimer *statusTimer;
+@property (strong) NSTimer *publicRepoTimer;
 @property (assign) BOOL waitingOnLastRequest;
 @property (strong) MRPreferencesWindowController *prefWindowController;
 @property (strong) NSString *currentStatus;
