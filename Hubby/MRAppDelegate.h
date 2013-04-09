@@ -24,6 +24,7 @@
 
 @class MRPreferencesWindowController;
 @class MRCreateRepositoryWindowController;
+@class Reachability;
 
 @interface MRAppDelegate : NSObject <NSApplicationDelegate, NSUserNotificationCenterDelegate>
 
@@ -39,6 +40,7 @@
 @property (strong) MRPreferencesWindowController *prefWindowController;
 @property (strong) NSString *currentStatus;
 @property (strong) MRCreateRepositoryWindowController *gistWindow;
+@property (strong) Reachability *reachability;
 
 - (IBAction)updateHubby:(id)sender;
 
@@ -58,6 +60,7 @@
 - (void)openRepo:(id)sender;
 - (void)userDidRevokeAccess;
 - (void)notificationsEnabledPrefDidChange;
+- (void)reachabilityChanged:(NSNotification *)notification;
 
 - (void)deauthoriseAccount:(NSNotification *)notification;
 

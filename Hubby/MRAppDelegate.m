@@ -28,6 +28,7 @@
 #import <DDASLLogger.h>
 #import <DDTTYLogger.h>
 #import <NXOAuth2.h>
+#import <Reachability.h>
 
 #pragma mark Notifications
 
@@ -75,6 +76,16 @@ enum {
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate:self];
+
+    // allocate a reachability object
+    _reachability = [Reachability reachabilityWithHostname:@"www.github.com"];
+    
+    // observer for reachability
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(reachabilityChanged:)
+                                                 name:kReachabilityChangedNotification
+                                               object:nil];
+    [_reachability startNotifier];
     
     // register url handler and observers for github callback
     [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(handleAppleEvent:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
@@ -550,6 +561,12 @@ enum {
         _currentStatus = nil;
         [_statusTimer invalidate];
     }
+}
+
+- (void)reachabilityChanged:(NSNotification *)notification
+{
+    // TODO trigger notification to swap accounts prefs view
+    // and invalidate active status and public repo timers
 }
 
 @end
