@@ -569,4 +569,26 @@ enum {
     // and invalidate active status and public repo timers
 }
 
+- (BOOL)validateMenuItem:(NSMenuItem *)item
+{
+    if ([item action] == @selector(showPreferences:))
+        return YES;
+    if ([item action] == @selector(showAbout:))
+        return YES;
+    if ([item action] == @selector(showAcknowledgements:))
+        return YES;
+    if ([item action] == @selector(openGitHubStatusPage:))
+        return YES;
+    if ([item action] == @selector(openRepo:))
+        return YES;
+    
+    // enable these items based on current reachability status
+    if ([[self reachability] isReachable]) {    
+        if ([item action] == @selector(showCreateRepository:))
+            return YES;
+    }
+    
+    return NO;
+}
+
 @end
