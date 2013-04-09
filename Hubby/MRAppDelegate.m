@@ -22,6 +22,7 @@
 
 #import "MRAppDelegate.h"
 #import "MRPreferencesWindowController.h"
+#import "MRCreateRepositoryWindowController.h"
 #import <JSONKit.h>
 #import <DDLog.h>
 #import <DDASLLogger.h>

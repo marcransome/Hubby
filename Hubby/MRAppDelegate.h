@@ -21,9 +21,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "MRCreateRepositoryWindowController.h"
 
 @class MRPreferencesWindowController;
+@class MRCreateRepositoryWindowController;
 
 @interface MRAppDelegate : NSObject <NSApplicationDelegate, NSUserNotificationCenterDelegate>
 
