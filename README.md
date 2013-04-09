@@ -7,6 +7,7 @@ Hubby makes use of the following open source libraries and frameworks:
 * [JSONKit](https://github.com/johnezang/JSONKit) by John Engelhart
 * [Sparkle](https://github.com/andymatuschak/Sparkle) by Andy Matuschak
 * [CocoaLumberjack](https://github.com/robbiehanson/CocoaLumberjack) by Robbie Hanson
+* [Reachability](https://github.com/tonymillion/Reachability) by Tony Million
 
 Many thanks to their authors for their great work.
 
