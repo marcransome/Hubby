@@ -91,11 +91,15 @@ extern NSString* ddLogLevel;
     [[self createButton] setEnabled:NO];
 
     NSMutableDictionary *jsonPayload = [NSMutableDictionary dictionary];
-    
-    // required parameters
-    [jsonPayload setObject:[[self name] stringValue] forKey:@"name"];
-    
+
     // validity tests
+    if (![[[self name] stringValue] length] > 0) {
+        NSAlert *alert = [NSAlert alertWithMessageText:@"Invalid name" defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:@"You must provide a name to create a new repository."];
+        
+        [alert beginSheetModalForWindow:[self window] modalDelegate:nil didEndSelector:nil contextInfo:nil];
+        return;
+    }
+    
     if ([[[self homepage] stringValue] length] > 0) {
         if (![NSURL URLWithString:[[self homepage] stringValue]]) {
             NSAlert *alert = [NSAlert alertWithMessageText:@"Invalid URL" defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:@"The Homepage URL you provided is not valid."];
@@ -104,6 +108,9 @@ extern NSString* ddLogLevel;
             return;
         }
     }
+    
+    // required parameters
+    [jsonPayload setObject:[[self name] stringValue] forKey:@"name"];
     
     // optional parameters
     if ([[self private] state] == NSOnState)
