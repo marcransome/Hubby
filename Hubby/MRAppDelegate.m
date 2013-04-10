@@ -77,6 +77,9 @@ enum {
 {
     [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate:self];
 
+    // create support directory for storing files later on
+    [self createHubbySupportDir];
+    
     // allocate a reachability object
     _reachability = [Reachability reachabilityWithHostname:@"www.github.com"];
     
@@ -589,6 +592,26 @@ enum {
     }
     
     return NO;
+}
+
+- (void)createHubbySupportDir
+{
+    // locate the application support directory in the user's home directory
+    NSURL *applicationSupportDir = [[[NSFileManager defaultManager] URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask] lastObject];
+    
+    NSString *bundleID = [[NSBundle mainBundle] bundleIdentifier];
+    
+    NSURL *hubbySupportFolder = nil;
+    
+    // if no application support folder exists, create one
+    if (applicationSupportDir) {
+        hubbySupportFolder = [applicationSupportDir URLByAppendingPathComponent:bundleID];
+        NSError *error = nil;
+        if (![[NSFileManager defaultManager] createDirectoryAtURL:hubbySupportFolder withIntermediateDirectories:NO attributes:nil error:&error]) {
+            // TODO handle errors
+            DDLogError(@"error creating support folder (%@)", [error description]);
+        }
+    }
 }
 
 @end

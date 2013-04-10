@@ -61,6 +61,7 @@
 - (void)userDidRevokeAccess;
 - (void)notificationsEnabledPrefDidChange;
 - (void)reachabilityChanged:(NSNotification *)notification;
+- (void)createHubbySupportDir;
 
 - (void)deauthoriseAccount:(NSNotification *)notification;
 
