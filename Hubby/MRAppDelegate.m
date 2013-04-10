@@ -77,9 +77,6 @@ enum {
 {
     [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate:self];
 
-    // create support directory for storing files later on
-    [self createHubbySupportDir];
-    
     // allocate a reachability object
     _reachability = [Reachability reachabilityWithHostname:@"www.github.com"];
     
