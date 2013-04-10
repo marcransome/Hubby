@@ -107,7 +107,7 @@ enum {
                                                        queue:nil
                                                   usingBlock:^(NSNotification *aNotification) {
                                                       NSError *error = [aNotification.userInfo objectForKey:NXOAuth2AccountStoreErrorKey];
-                                                      DDLogVerbose(@"GitHub authentication failed!");
+                                                      DDLogVerbose(@"GitHub authentication failed! (%@)", [error description]);
                                                       hubbyIsAuthorised = NO;
                                                   }];
     
