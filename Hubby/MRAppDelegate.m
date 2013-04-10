@@ -450,6 +450,11 @@ enum {
             
             [[NSNotificationCenter defaultCenter] postNotificationName:MRAccountAuthorised object:results];
             
+            // save api request data to disk for use when launching and offline
+            if(![responseData writeToURL:[[self hubbySupportDir] URLByAppendingPathComponent:@"api_rqst.json"] atomically:YES]) {
+                DDLogError(@"error writing api request data to disk");
+            }
+            
             DDLogVerbose(@"starting public repos timer");
             
             [self setPublicRepoTimer:[NSTimer scheduledTimerWithTimeInterval:60.0
