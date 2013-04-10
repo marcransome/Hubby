@@ -594,7 +594,7 @@ enum {
     return NO;
 }
 
-- (void)createHubbySupportDir
+- (NSURL *)hubbySupportDir
 {
     // locate the application support directory in the user's home directory
     NSURL *applicationSupportDir = [[[NSFileManager defaultManager] URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask] lastObject];
@@ -607,11 +607,14 @@ enum {
     if (applicationSupportDir) {
         hubbySupportFolder = [applicationSupportDir URLByAppendingPathComponent:bundleID];
         NSError *error = nil;
-        if (![[NSFileManager defaultManager] createDirectoryAtURL:hubbySupportFolder withIntermediateDirectories:NO attributes:nil error:&error]) {
+        if (![[NSFileManager defaultManager] createDirectoryAtURL:hubbySupportFolder withIntermediateDirectories:YES attributes:nil error:&error]) {
             // TODO handle errors
             DDLogError(@"error creating support folder (%@)", [error description]);
+            return nil;
         }
     }
+    
+    return hubbySupportFolder;
 }
 
 @end
