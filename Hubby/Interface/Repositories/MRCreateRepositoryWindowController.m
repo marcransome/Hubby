@@ -42,6 +42,7 @@ extern NSString* ddLogLevel;
 @property (weak) IBOutlet NSPopUpButton *gitignorePopUp;
 
 - (IBAction)createRepository:(id)sender;
+- (void)showAlertWithTitle:(NSString *)title informativeText:(NSString *)text;
 
 @end
 
@@ -94,17 +95,13 @@ extern NSString* ddLogLevel;
 
     // validity tests
     if (![[[self name] stringValue] length] > 0) {
-        NSAlert *alert = [NSAlert alertWithMessageText:@"Invalid name" defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:@"You must provide a name to create a new repository."];
-        
-        [alert beginSheetModalForWindow:[self window] modalDelegate:nil didEndSelector:nil contextInfo:nil];
+        [self showAlertWithTitle:@"Invalid name" informativeText:@"You must provide a name to create a new repository."];
         return;
     }
     
     if ([[[self homepage] stringValue] length] > 0) {
         if (![NSURL URLWithString:[[self homepage] stringValue]]) {
-            NSAlert *alert = [NSAlert alertWithMessageText:@"Invalid URL" defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:@"The Homepage URL you provided is not valid."];
-            
-            [alert beginSheetModalForWindow:[self window] modalDelegate:nil didEndSelector:nil contextInfo:nil];
+            [self showAlertWithTitle:@"Invalid URL" informativeText:@"The Homepage URL you provided is not valid."];
             return;
         }
     }
@@ -163,10 +160,8 @@ extern NSString* ddLogLevel;
                     errorString = [errorString stringByAppendingString:[NSString stringWithFormat:@"\n\u2022 %@", [errorDict objectForKey:@"message"]]];
                 }
 
-                NSAlert *alert = [NSAlert alertWithMessageText:@"Creation failed" defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", errorString];
-                
-                [alert beginSheetModalForWindow:[self window] modalDelegate:nil didEndSelector:nil contextInfo:nil];
-                
+                [self showAlertWithTitle:@"Creation failed" informativeText:errorString];
+                return;
             }
             else {
                 NSLog(@"%@", [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
@@ -193,5 +188,16 @@ extern NSString* ddLogLevel;
         }
     }];
 }
+
+- (void)showAlertWithTitle:(NSString *)title informativeText:(NSString *)text
+{
+    NSAlert *alert = [NSAlert alertWithMessageText:title defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:@"%@", text];
     
+    [[self progressIndicator] stopAnimation:nil];
+    [[self progressIndicator] setHidden:YES];
+    [[self createButton] setEnabled:YES];
+    
+    [alert beginSheetModalForWindow:[self window] modalDelegate:nil didEndSelector:nil contextInfo:nil];
+}
+
 @end
