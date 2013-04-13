@@ -39,6 +39,9 @@ static NSString* const MRAccountPreferencesWindowTitle = @"Account";
 static NSString* const MREventsPreferencesWindowTitle = @"Events";
 static NSString* const MRUpdatePreferencesWindowTitle = @"Update";
 
+#pragma mark -
+#pragma mark Initialisation
+
 @implementation MRPreferencesWindowController
 
 - (id)initWithWindow:(NSWindow *)window
@@ -49,7 +52,7 @@ static NSString* const MRUpdatePreferencesWindowTitle = @"Update";
         
         // ensure that our account preferences view exists after initialisation
         // of the controller, so that it is ready to receive notifications should
-        // the user have previously authenticated an account
+        // the user have previously authorised an account
         [self viewControllerForName:MRAccountPreferencesName];
     }
     

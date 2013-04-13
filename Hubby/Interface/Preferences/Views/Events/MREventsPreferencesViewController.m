@@ -8,7 +8,11 @@
 
 #import "MREventsPreferencesViewController.h"
 
+#pragma mark Externals
 extern NSString* const MRNotificationsEnabledChanged;
+
+#pragma mark -
+#pragma mark Interface
 
 @interface MREventsPreferencesViewController ()
 
@@ -19,6 +23,9 @@ extern NSString* const MRNotificationsEnabledChanged;
 - (IBAction)notificationsEnabledChanged:(id)sender;
 
 @end
+
+#pragma mark -
+#pragma mark Initialisation
 
 @implementation MREventsPreferencesViewController
 
@@ -36,6 +43,9 @@ extern NSString* const MRNotificationsEnabledChanged;
     
     return self;
 }
+
+#pragma mark -
+#pragma mark Action Methods
 
 - (IBAction)repeatIntervalChanged:(id)sender
 {

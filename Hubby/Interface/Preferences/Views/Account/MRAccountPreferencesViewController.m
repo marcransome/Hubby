@@ -33,6 +33,9 @@ extern NSString* const MRUserDidDeauthorise;
 
 extern int ddLogLevel;
 
+#pragma mark -
+#pragma mark Interface
+
 @interface MRAccountPreferencesViewController ()
 
 @property (weak) IBOutlet NSButton *authoriseButton;
@@ -52,6 +55,7 @@ extern int ddLogLevel;
 @end
 
 #pragma mark -
+#pragma mark Initialisation
 
 @implementation MRAccountPreferencesViewController
 
@@ -103,7 +107,7 @@ extern int ddLogLevel;
 }
 
 #pragma mark -
-#pragma mark Observer Methods
+#pragma mark Notifications
 
 - (void)accountWasAuthorised:(NSNotification *)notification
 {

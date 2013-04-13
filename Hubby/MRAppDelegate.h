@@ -42,27 +42,33 @@
 @property (strong) MRCreateRepositoryWindowController *createRepoWindow;
 @property (strong) Reachability *reachability;
 
-- (IBAction)updateHubby:(id)sender;
-
+/* status polling */
+- (void)updateStatus:(id)sender;
 - (void)pollGithub;
 - (void)pollFinished:(NSDictionary *)resultsDictionary;
 - (void)pollErrored;
 
+/* menubar item actions */
 - (IBAction)openGitHubStatusPage:(id)sender;
 - (IBAction)showPreferences:(id)sender;
 - (IBAction)showAbout:(id)sender;
 - (IBAction)showAcknowledgements:(id)sender;
 - (IBAction)showCreateRepository:(id)sender;
+- (IBAction)openRepo:(id)sender;
 
-- (void)handleAppleEvent:(NSAppleEventDescriptor *)event withReplyEvent: (NSAppleEventDescriptor *)replyEvent;
+/* api support methods */
 - (void)requestApi;
 - (void)requestRepos;
-- (void)openRepo:(id)sender;
 - (void)userDidRevokeAccess;
-- (void)notificationsEnabledPrefDidChange;
-- (void)reachabilityChanged:(NSNotification *)notification;
-- (NSURL *)hubbySupportDir;
 
-- (void)deauthoriseAccount:(NSNotification *)notification;
+/* general support methods  */
+- (NSURL *)hubbySupportDir;
+- (void)handleAppleEvent:(NSAppleEventDescriptor *)event withReplyEvent: (NSAppleEventDescriptor *)replyEvent;
+
+/* notifications */
+- (void)timerIntervalChanged:(NSNotification *)notification;
+- (void)notificationsEnabledChanged:(NSNotification *)notification;
+- (void)reachabilityChanged:(NSNotification *)notification;
+- (void)accountAuthorisedChanged:(NSNotification *)notification;
 
 @end

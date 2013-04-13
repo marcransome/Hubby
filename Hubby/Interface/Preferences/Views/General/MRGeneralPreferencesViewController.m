@@ -22,9 +22,7 @@
 
 #import "MRGeneralPreferencesViewController.h"
 
-@interface MRGeneralPreferencesViewController ()
-
-@end
+#pragma mark Initialisation
 
 @implementation MRGeneralPreferencesViewController
 

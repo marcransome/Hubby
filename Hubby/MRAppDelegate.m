@@ -78,14 +78,14 @@ enum {
     [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate:self];
 
     // allocate a reachability object
-    _reachability = [Reachability reachabilityWithHostname:@"www.github.com"];
+    [self setReachability:[Reachability reachabilityWithHostname:@"www.github.com"]];
     
     // observer for reachability
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(reachabilityChanged:)
                                                  name:kReachabilityChangedNotification
                                                object:nil];
-    [_reachability startNotifier];
+    [[self reachability] startNotifier];
     
     // register url handler and observers for github callback
     [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(handleAppleEvent:withReplyEvent:) forEventClass:kInternetEventClass andEventID:kAEGetURL];
@@ -135,17 +135,24 @@ enum {
     // set initial preference view by using user defaults
     [_prefWindowController setInitialPreference:[[NSUserDefaults standardUserDefaults] stringForKey:@"DefaultPreferenceViewController"]];
     
-    // if a stored account is found then we request the github api which will also indicate if we are
-    // still authorised to access the service (i.e. it will otherwise fail with a 401-404 http error)
-    if ([[[NXOAuth2AccountStore sharedStore] accountsWithAccountType:@"GitHub"] lastObject]) {
-        DDLogVerbose(@"stored account found, sending api request");
-        [[NSNotificationCenter defaultCenter] postNotificationName:MRWaitingOnApiRequest object:nil];
-        [self requestApi];
+    
+    // reachability test
+    if ([[self reachability] isReachable]) {
+        // if a stored account is found then we request the github api which will also indicate if we are
+        // still authorised to access the service (i.e. it will otherwise fail with a 401-404 http error)
+        if ([[[NXOAuth2AccountStore sharedStore] accountsWithAccountType:@"GitHub"] lastObject]) {
+            DDLogVerbose(@"stored account found, sending api request");
+            [[NSNotificationCenter defaultCenter] postNotificationName:MRWaitingOnApiRequest object:nil];
+            [self requestApi];
+        }
+    }
+    else {
+        
     }
     
     // observer for user deauthorisation
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(deauthoriseAccount:)
+                                             selector:@selector(accountAuthorisedChanged:)
                                                  name:MRUserDidDeauthorise object:nil];
     
     // menu item setup
@@ -166,22 +173,24 @@ enum {
 
     // observer for repeat interval preference
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                         selector:@selector(adjustTimerInterval:)
+                                         selector:@selector(timerIntervalChanged:)
                                              name:@"RepeatIntervalChanged"
                                            object:nil];
     
     // observer for repeat interval preference
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(notificationsEnabledPrefDidChange)
+                                             selector:@selector(notificationsEnabledChanged:)
                                                  name:MRNotificationsEnabledChanged
                                                object:nil];
     
     // trigger status timer startup (dependent on user defaults)
-    [self notificationsEnabledPrefDidChange];
-
+    [self notificationsEnabledChanged:nil];
 }
 
-- (IBAction)updateHubby:(id)sender
+#pragma mark -
+#pragma mark Status Polling
+
+- (void)updateStatus:(id)sender
 {
     if (!_waitingOnLastRequest) {
         _waitingOnLastRequest = YES;
@@ -355,6 +364,9 @@ enum {
     _waitingOnLastRequest = NO;
 }
 
+#pragma mark -
+#pragma mark Menubar Item Actions
+
 - (IBAction)openGitHubStatusPage:(id)sender
 {
     [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://status.github.com"]];
@@ -372,20 +384,6 @@ enum {
     [NSApp orderFrontStandardAboutPanel:nil];
 }
 
-- (void)adjustTimerInterval:(NSNotification *)notification
-{
-    [_statusTimer invalidate];
-    
-    NSInteger repeatIntervalInSeconds = [[NSUserDefaults standardUserDefaults] integerForKey:@"RepeatInterval"] * 60;
-    _statusTimer = [NSTimer scheduledTimerWithTimeInterval:(repeatIntervalInSeconds)
-                                                    target:self
-                                                  selector:@selector(updateHubby:)
-                                                  userInfo:nil
-                                                   repeats:YES];
-    
-    DDLogVerbose(@"adjusted timer interval (%lis)", (long)repeatIntervalInSeconds);
-}
-
 - (IBAction)showAcknowledgements:(id)sender
 {
     [[NSWorkspace sharedWorkspace] openFile:[[NSBundle mainBundle] pathForResource:@"Acknowledgements" ofType:@"rtf"]];
@@ -401,29 +399,13 @@ enum {
     [[_createRepoWindow window] makeKeyAndOrderFront:nil];
 }
 
--(void)userNotificationCenter:(NSUserNotificationCenter *)center didActivateNotification:(NSUserNotification *)notification
+- (void)openRepo:(id)sender
 {
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://status.github.com"]];
-    
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"RemoveNotificationsOnClick"]) {
-        [[NSUserNotificationCenter defaultUserNotificationCenter] removeDeliveredNotification:notification];
-    }
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://github.com/%@", [sender title]]]];
 }
 
-- (void)handleAppleEvent:(NSAppleEventDescriptor *)event withReplyEvent: (NSAppleEventDescriptor *)replyEvent
-{
-    // ignore repeated callbacks while authorised or attempting authorisation
-    if (hubbyIsAuthorised == NO) {
-        if ([[event description] rangeOfString:@"error"].location == NSNotFound) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:MRWaitingOnApiRequest object:nil];
-            
-            NSURL *url = [NSURL URLWithString:[[event paramDescriptorForKeyword:keyDirectObject] stringValue]];
-            DDLogVerbose(@"callback received (%@)", url);
-            
-            [[NXOAuth2AccountStore sharedStore] handleRedirectURL:url];
-        }
-    }
-}
+#pragma mark -
+#pragma mark API Support Methods
 
 - (void)requestApi
 {
@@ -450,7 +432,7 @@ enum {
             
             [[NSNotificationCenter defaultCenter] postNotificationName:MRAccountAuthorised object:results];
             
-            // save api request data to disk for use when launching and offline
+            // save api request data to disk for use when launching if github is unreachable
             if(![responseData writeToURL:[[self hubbySupportDir] URLByAppendingPathComponent:@"api_rqst.json"] atomically:YES]) {
                 DDLogError(@"error writing api request data to disk");
             }
@@ -507,28 +489,6 @@ enum {
     }];
 }
 
-- (void)openRepo:(id)sender
-{
-    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://github.com/%@", [sender title]]]];
-}
-
-- (void)deauthoriseAccount:(NSNotification *)notification
-{
-    hubbyIsAuthorised = NO;
-    
-    // update public repos menu item
-    [[self publicReposMenu] removeAllItems];
-    [[self publicReposMenuItem] setEnabled:NO];
-    [[self publicRepoTimer] invalidate];
-    
-    DDLogVerbose(@"stopped public repos timer");
-}
-
-- (BOOL)userNotificationCenter:(NSUserNotificationCenter *)center shouldPresentNotification:(NSUserNotification *)notification
-{
-    return YES;
-}
-
 - (void)userDidRevokeAccess
 {
     DDLogError(@"401-404 error: no longer authorised, removing accounts");
@@ -537,7 +497,7 @@ enum {
         [[NXOAuth2AccountStore sharedStore] removeAccount:account];
     };
     
-    [self deauthoriseAccount:nil];
+    [self accountAuthorisedChanged:nil];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:MRAccountDeauthorised object:nil];
     
@@ -546,54 +506,22 @@ enum {
     [alert runModal];
 }
 
-- (void)notificationsEnabledPrefDidChange
-{
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"EnableNotifications"]) {
-        NSTimeInterval repeatIntervalInSeconds = [[NSUserDefaults standardUserDefaults] integerForKey:@"RepeatInterval"] * 60.0;
-        
-        DDLogVerbose(@"starting status timer with interval %.2fs", repeatIntervalInSeconds);
-        
-        _statusTimer = [NSTimer scheduledTimerWithTimeInterval:(repeatIntervalInSeconds <= 60.0 ? 60.0 : repeatIntervalInSeconds)
-                                                        target:self
-                                                      selector:@selector(updateHubby:)
-                                                      userInfo:nil
-                                                       repeats:YES];
-        
-        [_statusTimer fire];
-    }
-    else {
-        DDLogVerbose(@"stopping status timer");
-        _currentStatus = nil;
-        [_statusTimer invalidate];
-    }
-}
+#pragma mark -
+#pragma mark General Support Methods
 
-- (void)reachabilityChanged:(NSNotification *)notification
+- (void)handleAppleEvent:(NSAppleEventDescriptor *)event withReplyEvent: (NSAppleEventDescriptor *)replyEvent
 {
-    // TODO trigger notification to swap accounts prefs view
-    // and invalidate active status and public repo timers
-}
-
-- (BOOL)validateMenuItem:(NSMenuItem *)item
-{
-    if ([item action] == @selector(showPreferences:))
-        return YES;
-    if ([item action] == @selector(showAbout:))
-        return YES;
-    if ([item action] == @selector(showAcknowledgements:))
-        return YES;
-    if ([item action] == @selector(openGitHubStatusPage:))
-        return YES;
-    if ([item action] == @selector(openRepo:))
-        return YES;
-    
-    // enable these items based on current reachability status
-    if ([[self reachability] isReachable]) {    
-        if ([item action] == @selector(showCreateRepository:))
-            return YES;
+    // ignore repeated callbacks while authorised or attempting authorisation
+    if (hubbyIsAuthorised == NO) {
+        if ([[event description] rangeOfString:@"error"].location == NSNotFound) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:MRWaitingOnApiRequest object:nil];
+            
+            NSURL *url = [NSURL URLWithString:[[event paramDescriptorForKeyword:keyDirectObject] stringValue]];
+            DDLogVerbose(@"callback received (%@)", url);
+            
+            [[NXOAuth2AccountStore sharedStore] handleRedirectURL:url];
+        }
     }
-    
-    return NO;
 }
 
 - (NSURL *)hubbySupportDir
@@ -617,6 +545,105 @@ enum {
     }
     
     return hubbySupportFolder;
+}
+
+#pragma mark -
+#pragma mark Notifications
+
+- (void)timerIntervalChanged:(NSNotification *)notification
+{
+    [_statusTimer invalidate];
+    
+    NSInteger repeatIntervalInSeconds = [[NSUserDefaults standardUserDefaults] integerForKey:@"RepeatInterval"] * 60;
+    _statusTimer = [NSTimer scheduledTimerWithTimeInterval:(repeatIntervalInSeconds)
+                                                    target:self
+                                                  selector:@selector(updateStatus:)
+                                                  userInfo:nil
+                                                   repeats:YES];
+    
+    DDLogVerbose(@"adjusted timer interval (%lis)", (long)repeatIntervalInSeconds);
+}
+
+- (void)notificationsEnabledChanged:(NSNotification *)notification
+{
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"EnableNotifications"]) {
+        NSTimeInterval repeatIntervalInSeconds = [[NSUserDefaults standardUserDefaults] integerForKey:@"RepeatInterval"] * 60.0;
+        
+        DDLogVerbose(@"starting status timer with interval %.2fs", repeatIntervalInSeconds);
+        
+        _statusTimer = [NSTimer scheduledTimerWithTimeInterval:(repeatIntervalInSeconds <= 60.0 ? 60.0 : repeatIntervalInSeconds)
+                                                        target:self
+                                                      selector:@selector(updateStatus:)
+                                                      userInfo:nil
+                                                       repeats:YES];
+        
+        [_statusTimer fire];
+    }
+    else {
+        DDLogVerbose(@"stopping status timer");
+        _currentStatus = nil;
+        [_statusTimer invalidate];
+    }
+}
+
+- (void)reachabilityChanged:(NSNotification *)notification
+{
+    // TODO trigger notification to swap accounts prefs view
+    // and invalidate active status and public repo timers
+}
+
+- (void)accountAuthorisedChanged:(NSNotification *)notification
+{
+    hubbyIsAuthorised = NO;
+    
+    // update public repos menu item
+    [[self publicReposMenu] removeAllItems];
+    [[self publicReposMenuItem] setEnabled:NO];
+    [[self publicRepoTimer] invalidate];
+    
+    DDLogVerbose(@"stopped public repos timer");
+}
+
+#pragma mark -
+#pragma mark NSUserNotificationCenterDelegate
+
+-(void)userNotificationCenter:(NSUserNotificationCenter *)center didActivateNotification:(NSUserNotification *)notification
+{
+    [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"https://status.github.com"]];
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"RemoveNotificationsOnClick"]) {
+        [[NSUserNotificationCenter defaultUserNotificationCenter] removeDeliveredNotification:notification];
+    }
+}
+
+- (BOOL)userNotificationCenter:(NSUserNotificationCenter *)center shouldPresentNotification:(NSUserNotification *)notification
+{
+    return YES;
+}
+
+#pragma mark -
+#pragma mark Menu Item Validation
+
+- (BOOL)validateMenuItem:(NSMenuItem *)item
+{
+    if ([item action] == @selector(showPreferences:))
+        return YES;
+    if ([item action] == @selector(showAbout:))
+        return YES;
+    if ([item action] == @selector(showAcknowledgements:))
+        return YES;
+    if ([item action] == @selector(openGitHubStatusPage:))
+        return YES;
+    if ([item action] == @selector(openRepo:))
+        return YES;
+    
+    // enable these items based on current reachability status
+    if ([[self reachability] isReachable]) {    
+        if ([item action] == @selector(showCreateRepository:))
+            return YES;
+    }
+    
+    return NO;
 }
 
 @end

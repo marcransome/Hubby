@@ -25,7 +25,12 @@
 #import <JSONKit.h>
 #import <DDLog.h>
 
+#pragma mark Externs
+
 extern NSString* ddLogLevel;
+
+#pragma mark -
+#pragma mark Interface
 
 @interface MRCreateRepositoryWindowController ()
 
@@ -45,6 +50,9 @@ extern NSString* ddLogLevel;
 - (void)showAlertWithTitle:(NSString *)title informativeText:(NSString *)text;
 
 @end
+
+#pragma mark -
+#pragma mark Initialisation
 
 @implementation MRCreateRepositoryWindowController
 
@@ -84,6 +92,9 @@ extern NSString* ddLogLevel;
         }
     }
 }
+
+#pragma mark -
+#pragma mark Action Methods
 
 - (IBAction)createRepository:(id)sender
 {
@@ -188,6 +199,9 @@ extern NSString* ddLogLevel;
         }
     }];
 }
+
+#pragma mark -
+#pragma mark General Support Methods
 
 - (void)showAlertWithTitle:(NSString *)title informativeText:(NSString *)text
 {

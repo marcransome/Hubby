@@ -22,9 +22,7 @@
 
 #import "MRUpdatePreferencesViewController.h"
 
-@interface MRUpdatePreferencesViewController ()
-
-@end
+#pragma mark Initialisation
 
 @implementation MRUpdatePreferencesViewController
 
