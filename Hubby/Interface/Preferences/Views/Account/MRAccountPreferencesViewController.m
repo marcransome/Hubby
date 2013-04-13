@@ -24,6 +24,7 @@
 #import "MRAppDelegate.h"
 #import <NXOAuth2AccountStore.h>
 #import <DDLog.h>
+#import <JSONKit.h>
 
 #pragma mark Externals
 
@@ -31,6 +32,7 @@ extern NSString* const MRAccountAuthorised;
 extern NSString* const MRAccountDeauthorised;
 extern NSString* const MRWaitingOnApiRequest;
 extern NSString* const MRUserDidDeauthorise;
+extern NSString* const MRHubbyIsOffline;
 
 extern int ddLogLevel;
 
@@ -51,6 +53,7 @@ extern int ddLogLevel;
 - (IBAction)deauthoriseAccount:(id)sender;
 - (void)showProgress:(NSNotification *)notification;
 - (void)accountWasAuthorised:(NSNotification *)notification;
+- (void)accountWasPreviouslyAuthorised:(NSNotification *)notification;
 - (void)accountWasDeauthorised:(NSNotification *)notification;
 
 @end
@@ -74,13 +77,17 @@ extern int ddLogLevel;
                                                      name:MRAccountAuthorised object:nil];
         
         [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(accountWasPreviouslyAuthorised:)
+                                                     name:MRHubbyIsOffline object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(accountWasDeauthorised:)
                                                      name:MRAccountDeauthorised object:nil];
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(showProgress:)
                                                      name:MRWaitingOnApiRequest object:nil];
-            
+        
         [[self view] addSubview:[self userAuthenticateView]];
     }
     
@@ -165,6 +172,42 @@ extern int ddLogLevel;
         
         [[self userAuthenticateView] removeFromSuperview];
         [[self view] addSubview:[self userInfoView]];
+    }
+}
+
+- (void)accountWasPreviouslyAuthorised:(NSNotification *)notification
+{
+    NSImage *userAvatarImage = [[NSImage alloc] initWithContentsOfURL:[[MRAppDelegate hubbySupportDir] URLByAppendingPathComponent:@"avatar.tiff"]];
+    
+    if (userAvatarImage)
+        [[self userAvatar] setImage:userAvatarImage];
+    //else
+    // TODO set dummy avatar image (no image is saved if user has none)
+    
+    NSData *userInfoData = [NSData dataWithContentsOfURL:[[MRAppDelegate hubbySupportDir] URLByAppendingPathComponent:@"user.json"]];
+    
+    if (userInfoData) {
+        NSDictionary *userInfo = [userInfoData objectFromJSONData];
+        
+        if ([userInfo objectForKey:@"name"])
+            [[self userInfoName] setStringValue:[NSString stringWithFormat:@"Name: %@", [userInfo objectForKey:@"name"]]];
+        else
+            [[self userInfoName] setStringValue:[NSString stringWithFormat:@"Name: none"]];
+        
+        if ([userInfo objectForKey:@"location"])
+            [[self userInfoLocation] setStringValue:[NSString stringWithFormat:@"Location: %@", [userInfo objectForKey:@"location"]]];
+        else
+            [[self userInfoLocation] setStringValue:[NSString stringWithFormat:@"Location: none"]];
+        
+        [[self userAuthenticateView] removeFromSuperview];
+        [[self view] addSubview:[self userInfoView]];
+    }
+    else {
+        // reading user.json failed, this could mean that the user removed
+        // the file or application support directory, or the previous
+        // attempt at saving failed
+        
+        // TODO deauthorise hubby, as we have no previously saved user data!
     }
 }
 

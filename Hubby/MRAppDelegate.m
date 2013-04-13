@@ -37,6 +37,7 @@ NSString* const MRAccountDeauthorised = @"MRAccountDeauthorised";
 NSString* const MRWaitingOnApiRequest = @"MRWaitingOnApiRequest";
 NSString* const MRUserDidDeauthorise = @"MRUserDidDeauthorise";
 NSString* const MRNotificationsEnabledChanged = @"MRNotificationsEnabledChanged";
+NSString* const MRHubbyIsOffline = @"MRHubbyIsOffline";
 
 static BOOL hubbyIsAuthorised = NO;
 
@@ -136,18 +137,22 @@ enum {
     [_prefWindowController setInitialPreference:[[NSUserDefaults standardUserDefaults] stringForKey:@"DefaultPreferenceViewController"]];
     
     
-    // reachability test
-    if ([[self reachability] isReachable]) {
-        // if a stored account is found then we request the github api which will also indicate if we are
-        // still authorised to access the service (i.e. it will otherwise fail with a 401-404 http error)
-        if ([[[NXOAuth2AccountStore sharedStore] accountsWithAccountType:@"GitHub"] lastObject]) {
-            DDLogVerbose(@"stored account found, sending api request");
+
+    // if a stored account is found then we request the github api which will also indicate if we are
+    // still authorised to access the service (i.e. it will otherwise fail with a 401-404 http error)
+    if ([[[NXOAuth2AccountStore sharedStore] accountsWithAccountType:@"GitHub"] lastObject]) {
+        if ([[self reachability] isReachable]) {
+            DDLogVerbose(@"stored account found and reachable, sending api request");
             [[NSNotificationCenter defaultCenter] postNotificationName:MRWaitingOnApiRequest object:nil];
             [self requestApi];
+            
+            // trigger status timer startup (dependent on user defaults)
+            [self notificationsEnabledChanged:nil];
         }
-    }
-    else {
-        
+        else {
+            DDLogVerbose(@"stored account found but unreachable, using offline data");
+            [[NSNotificationCenter defaultCenter] postNotificationName:MRHubbyIsOffline object:nil];
+        }
     }
     
     // observer for user deauthorisation
@@ -182,9 +187,6 @@ enum {
                                              selector:@selector(notificationsEnabledChanged:)
                                                  name:MRNotificationsEnabledChanged
                                                object:nil];
-    
-    // trigger status timer startup (dependent on user defaults)
-    [self notificationsEnabledChanged:nil];
 }
 
 #pragma mark -
@@ -431,11 +433,6 @@ enum {
             hubbyIsAuthorised = YES;
             
             [[NSNotificationCenter defaultCenter] postNotificationName:MRAccountAuthorised object:results];
-            
-            // save api request data to disk for use when launching if github is unreachable
-            if(![responseData writeToURL:[[self hubbySupportDir] URLByAppendingPathComponent:@"api_rqst.json"] atomically:YES]) {
-                DDLogError(@"error writing api request data to disk");
-            }
             
             DDLogVerbose(@"starting public repos timer");
             
