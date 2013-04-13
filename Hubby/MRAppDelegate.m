@@ -524,7 +524,7 @@ enum {
     }
 }
 
-- (NSURL *)hubbySupportDir
++ (NSURL *)hubbySupportDir
 {
     // locate the application support directory in the user's home directory
     NSURL *applicationSupportDir = [[[NSFileManager defaultManager] URLsForDirectory:NSApplicationSupportDirectory inDomains:NSUserDomainMask] lastObject];
