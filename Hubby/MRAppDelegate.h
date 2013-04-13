@@ -39,7 +39,7 @@
 @property (assign) BOOL waitingOnLastRequest;
 @property (strong) MRPreferencesWindowController *prefWindowController;
 @property (strong) NSString *currentStatus;
-@property (strong) MRCreateRepositoryWindowController *gistWindow;
+@property (strong) MRCreateRepositoryWindowController *createRepoWindow;
 @property (strong) Reachability *reachability;
 
 - (IBAction)updateHubby:(id)sender;

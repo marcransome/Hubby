@@ -393,12 +393,12 @@ enum {
 
 - (IBAction)showCreateRepository:(id)sender
 {
-    if (!_gistWindow) {
-        _gistWindow = [[MRCreateRepositoryWindowController alloc] initWithWindowNibName:@"MRCreateRepositoryWindow"];
+    if (!_createRepoWindow) {
+        _createRepoWindow = [[MRCreateRepositoryWindowController alloc] initWithWindowNibName:@"MRCreateRepositoryWindow"];
     }
     
     [NSApp activateIgnoringOtherApps: YES];
-    [[_gistWindow window] makeKeyAndOrderFront:nil];
+    [[_createRepoWindow window] makeKeyAndOrderFront:nil];
 }
 
 -(void)userNotificationCenter:(NSUserNotificationCenter *)center didActivateNotification:(NSUserNotification *)notification
