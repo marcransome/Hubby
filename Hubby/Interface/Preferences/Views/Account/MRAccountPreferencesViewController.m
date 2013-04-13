@@ -21,6 +21,7 @@
 //
 
 #import "MRAccountPreferencesViewController.h"
+#import "MRAppDelegate.h"
 #import <NXOAuth2AccountStore.h>
 #import <DDLog.h>
 
@@ -123,6 +124,11 @@ extern int ddLogLevel;
     else
         [[self userInfoLocation] setStringValue:[NSString stringWithFormat:@"Location: none"]];
   
+    // save user data to disk for offline accesss
+    if(![userInfo writeToURL:[[MRAppDelegate hubbySupportDir] URLByAppendingPathComponent:@"user.json"] atomically:YES]) {
+        DDLogError(@"error writing api request data to disk");
+    }
+    
     NSString *gravatarId = [userInfo objectForKey:@"gravatar_id"];
     
     if (gravatarId) {
@@ -135,6 +141,11 @@ extern int ddLogLevel;
             if ([data length] > 0 && error == nil) {
                 NSImage *userAvatarImage = [[NSImage alloc] initWithData:data];
                 [[self userAvatar] setImage:userAvatarImage];
+                
+                // save user avatar image to disk for offline accesss
+                if (![[userAvatarImage TIFFRepresentation] writeToURL:[[MRAppDelegate hubbySupportDir] URLByAppendingPathComponent:@"avatar.tiff"] atomically:YES]) {
+                    DDLogError(@"error writing avatar image to disk");
+                }
             }
             else {
                 // TODO failed request, give up for this session and display dummy user image

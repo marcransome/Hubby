@@ -62,7 +62,7 @@
 - (void)userDidRevokeAccess;
 
 /* general support methods  */
-- (NSURL *)hubbySupportDir;
++ (NSURL *)hubbySupportDir;
 - (void)handleAppleEvent:(NSAppleEventDescriptor *)event withReplyEvent: (NSAppleEventDescriptor *)replyEvent;
 
 /* notifications */
