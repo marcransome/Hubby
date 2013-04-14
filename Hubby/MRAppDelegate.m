@@ -139,7 +139,7 @@ enum {
     
 
     // if a stored account is found then we request the github api which will also indicate if we are
-    // still authorised to access the service (i.e. it will otherwise fail with a 401-404 http error)
+    // still authorised to access the service (i.e. it will otherwise fail with a 401/403 http error)
     if ([[[NXOAuth2AccountStore sharedStore] accountsWithAccountType:@"GitHub"] lastObject]) {
         if ([[self reachability] isReachable]) {
             DDLogVerbose(@"stored account found and reachable, sending api request");
@@ -418,7 +418,7 @@ enum {
 
         if (error) {
             
-            if ([error code] >= 401 && [error code] <= 404)
+            if ([error code] == 401 || [error code] == 403)
             {
                 [self userDidRevokeAccess];
                 return;
@@ -457,7 +457,7 @@ enum {
         
         if (error) {
             
-            if ([error code] >= 401 && [error code] <= 404)
+            if ([error code] == 401 || [error code] == 403)
             {
                 [self userDidRevokeAccess];
                 return;
@@ -488,7 +488,7 @@ enum {
 
 - (void)userDidRevokeAccess
 {
-    DDLogError(@"401-404 error: no longer authorised, removing accounts");
+    DDLogError(@"401/403 error: no longer authorised, removing accounts");
     
     for (NXOAuth2Account *account in [[NXOAuth2AccountStore sharedStore] accountsWithAccountType:@"GitHub"]) {
         [[NXOAuth2AccountStore sharedStore] removeAccount:account];
