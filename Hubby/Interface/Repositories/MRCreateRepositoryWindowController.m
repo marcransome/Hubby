@@ -197,6 +197,12 @@ extern int ddLogLevel;
                 [self close];
             }
         }
+        else if ([error code] == NSURLErrorNotConnectedToInternet) {
+            [self showAlertWithTitle:@"Connection Offline" informativeText:@"The repository was not created as the system does not have a connection to the Internet."];
+        }
+        else if ([error code] == NSURLErrorTimedOut) {
+            [self showAlertWithTitle:@"Timed Out" informativeText:@"The repository was not created as the network request timed out."];
+        }
     }];
 }
 
