@@ -55,6 +55,7 @@ extern int ddLogLevel;
 - (void)accountWasAuthorised:(NSNotification *)notification;
 - (void)accountWasPreviouslyAuthorised:(NSNotification *)notification;
 - (void)accountWasDeauthorised:(NSNotification *)notification;
+- (void)showUserInfoView;
 
 @end
 
@@ -139,7 +140,7 @@ extern int ddLogLevel;
     
     NSString *gravatarId = [userInfo objectForKey:@"gravatar_id"];
     
-    if (gravatarId) {
+    if (gravatarId) { // user has an avatar
         NSURL *gravatarURL = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.gravatar.com/avatar/%@?s=210", gravatarId]];
 
         NSURLRequest *request = [NSURLRequest requestWithURL:gravatarURL];
@@ -156,23 +157,30 @@ extern int ddLogLevel;
                 }
             }
             else {
-                // TODO failed request, give up for this session and display dummy user image
-                //[[self userAvatar] setImage:dummyAvatarImage];
+                // a failed request occured so test for an existing loaded image first
+                // and fallback to using a local image or dummy image if necessary
+                if ([[self userAvatar] image] == nil) {
+                    DDLogError(@"failed avatar image request, attempting to load from disk");
+                    
+                    NSData *avatarImageData = [NSData dataWithContentsOfURL:[[MRAppDelegate hubbySupportDir] URLByAppendingPathComponent:@"avatar.tiff"]];
+                    
+                    if (avatarImageData) {
+                        NSImage *userAvatarImage = [[NSImage alloc] initWithData:avatarImageData];
+                        [[self userAvatar] setImage:userAvatarImage];
+                    }
+                    else {
+                        DDLogError(@"no local avatar image, using dummy instead");
+                        // TODO set dummy image
+                    }
+                }
             }
             
-            [[self userAuthenticateView] removeFromSuperview];
-            [[self view] addSubview:[self userInfoView]];
-            
-            [[self authoriseButton] setEnabled:YES];
-            [[self progressIndicator] stopAnimation:nil];
-            [[self progressIndicator] setHidden:YES];
+            [self showUserInfoView];
         }];
     }
-    else {
+    else { // user has no avatar
         // TODO insert dummy user image into image well
-        
-        [[self userAuthenticateView] removeFromSuperview];
-        [[self view] addSubview:[self userInfoView]];
+        [self showUserInfoView];
     }
 }
 
@@ -227,6 +235,16 @@ extern int ddLogLevel;
     [[self authoriseButton] setEnabled:NO];
     [[self progressIndicator] setHidden:NO];
     [[self progressIndicator] startAnimation:nil];
+}
+
+- (void)showUserInfoView
+{
+    [[self userAuthenticateView] removeFromSuperview];
+    [[self view] addSubview:[self userInfoView]];
+    
+    [[self authoriseButton] setEnabled:YES];
+    [[self progressIndicator] stopAnimation:nil];
+    [[self progressIndicator] setHidden:YES];
 }
 
 @end
