@@ -212,9 +212,9 @@ enum {
     if (apiJsonData == nil || [apiResponse statusCode] != 200)
     {
         if (apiError)
-            DDLogError(@"error for api request: %@ (%@ %li)", [apiError domain], [apiError localizedDescription], [apiError code]);
+            DDLogError(@"error for status api request: %@ (%@ %li)", [apiError domain], [apiError localizedDescription], [apiError code]);
         else
-            DDLogError(@"no data received or http error for api request (status code is %li)", [apiResponse statusCode]);
+            DDLogError(@"no data received or http error for status api request (status code is %li)", [apiResponse statusCode]);
         
         [self performSelectorOnMainThread:@selector(pollErrored) withObject:nil waitUntilDone:NO];
         
