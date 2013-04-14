@@ -33,6 +33,7 @@ extern NSString* const MRAccountDeauthorised;
 extern NSString* const MRWaitingOnApiRequest;
 extern NSString* const MRUserDidDeauthorise;
 extern NSString* const MRHubbyIsOffline;
+extern NSString* const MRAccountAccessFailed;
 
 extern int ddLogLevel;
 
@@ -88,6 +89,10 @@ extern int ddLogLevel;
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(showProgress:)
                                                      name:MRWaitingOnApiRequest object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(stopProgress:)
+                                                     name:MRAccountAccessFailed object:nil];
         
         [[self view] addSubview:[self userAuthenticateView]];
     }
@@ -240,6 +245,13 @@ extern int ddLogLevel;
     [[self authoriseButton] setEnabled:NO];
     [[self progressIndicator] setHidden:NO];
     [[self progressIndicator] startAnimation:nil];
+}
+
+- (void)stopProgress:(NSNotification *)notification
+{
+    [[self authoriseButton] setEnabled:YES];
+    [[self progressIndicator] stopAnimation:nil];
+    [[self progressIndicator] setHidden:YES];
 }
 
 - (void)showUserInfoView

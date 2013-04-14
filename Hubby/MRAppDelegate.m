@@ -38,6 +38,7 @@ NSString* const MRWaitingOnApiRequest = @"MRWaitingOnApiRequest";
 NSString* const MRUserDidDeauthorise = @"MRUserDidDeauthorise";
 NSString* const MRNotificationsEnabledChanged = @"MRNotificationsEnabledChanged";
 NSString* const MRHubbyIsOffline = @"MRHubbyIsOffline";
+NSString* const MRAccountAccessFailed = @"MRAccountAccessFailed";
 
 static BOOL hubbyIsAuthorised = NO;
 
@@ -109,6 +110,7 @@ enum {
                                                   usingBlock:^(NSNotification *aNotification) {
                                                       NSError *error = [aNotification.userInfo objectForKey:NXOAuth2AccountStoreErrorKey];
                                                       DDLogVerbose(@"GitHub authentication failed! (%@)", [error description]);
+                                                      [[NSNotificationCenter defaultCenter] postNotificationName:MRAccountAccessFailed object:nil];
                                                       hubbyIsAuthorised = NO;
                                                   }];
     
@@ -136,8 +138,6 @@ enum {
     // set initial preference view by using user defaults
     [_prefWindowController setInitialPreference:[[NSUserDefaults standardUserDefaults] stringForKey:@"DefaultPreferenceViewController"]];
     
-    
-
     // if a stored account is found then we request the github api which will also indicate if we are
     // still authorised to access the service (i.e. it will otherwise fail with a 401/403 http error)
     if ([[[NXOAuth2AccountStore sharedStore] accountsWithAccountType:@"GitHub"] lastObject]) {
