@@ -132,7 +132,8 @@ extern int ddLogLevel;
         [[self userInfoLocation] setStringValue:[NSString stringWithFormat:@"Location: none"]];
   
     // save user data to disk for offline accesss
-    if(![userInfo writeToURL:[[MRAppDelegate hubbySupportDir] URLByAppendingPathComponent:@"user.json"] atomically:YES]) {
+    NSData *userInfoData = [userInfo JSONData];
+    if(![userInfoData writeToURL:[[MRAppDelegate hubbySupportDir] URLByAppendingPathComponent:@"user.json"] atomically:YES]) {
         DDLogError(@"error writing api request data to disk");
     }
     
