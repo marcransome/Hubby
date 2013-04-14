@@ -79,7 +79,7 @@ enum {
     [[NSUserNotificationCenter defaultUserNotificationCenter] setDelegate:self];
 
     // allocate a reachability object
-    [self setReachability:[Reachability reachabilityWithHostname:@"www.github.com"]];
+    [self setReachability:[Reachability reachabilityForInternetConnection]];
     
     // observer for reachability
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -590,8 +590,21 @@ enum {
 
 - (void)reachabilityChanged:(NSNotification *)notification
 {
-    // TODO trigger notification to swap accounts prefs view
-    // and invalidate active status and public repo timers
+    NetworkStatus status = [(Reachability *)[notification object] currentReachabilityStatus];
+    
+    if (status == NotReachable) {
+        DDLogVerbose(@"no longer reachable, invalidating timers");
+        [[self statusTimer] invalidate];
+        [[self publicRepoTimer] invalidate];
+    }
+    else {
+        DDLogVerbose(@"now reachable, sending api request");
+        [[NSNotificationCenter defaultCenter] postNotificationName:MRWaitingOnApiRequest object:nil];
+        [self requestApi];
+        
+        // trigger status timer startup (dependent on user defaults)
+        [self notificationsEnabledChanged:nil];
+    }
 }
 
 - (void)accountAuthorisedChanged:(NSNotification *)notification
