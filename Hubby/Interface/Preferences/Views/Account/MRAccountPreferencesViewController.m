@@ -212,11 +212,16 @@ extern int ddLogLevel;
         [[self view] addSubview:[self userInfoView]];
     }
     else {
-        // reading user.json failed, this could mean that the user removed
-        // the file or application support directory, or the previous
+        // reading user.json failed, this could indicate that the user removed
+        // the file, the application support directory, or that the previous
         // attempt at saving failed
+
+        DDLogWarn(@"attempt to read user.json while unreachable failed, deauthorising accounts");
+        for (NXOAuth2Account *account in [[NXOAuth2AccountStore sharedStore] accountsWithAccountType:@"GitHub"]) {
+            [[NXOAuth2AccountStore sharedStore] removeAccount:account];
+        };
         
-        // TODO deauthorise hubby, as we have no previously saved user data!
+        [[NSNotificationCenter defaultCenter] postNotificationName:MRUserDidDeauthorise object:nil];
     }
 }
 
