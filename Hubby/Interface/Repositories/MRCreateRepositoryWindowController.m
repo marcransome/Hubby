@@ -27,7 +27,7 @@
 
 #pragma mark Externs
 
-extern NSString* ddLogLevel;
+extern int ddLogLevel;
 
 #pragma mark -
 #pragma mark Interface
@@ -140,7 +140,7 @@ extern NSString* ddLogLevel;
         }
     }
     
-    NSLog(@"%@", [jsonPayload JSONString]);
+    DDLogVerbose(@"%@", [jsonPayload JSONString]);
     
     NXOAuth2Request *request = [[NXOAuth2Request alloc] initWithResource:[NSURL URLWithString:@"https://api.github.com/user/repos"]
                                                                      method:@"POST"
