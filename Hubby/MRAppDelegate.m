@@ -145,15 +145,15 @@ enum {
             DDLogVerbose(@"stored account found and reachable, sending api request");
             [[NSNotificationCenter defaultCenter] postNotificationName:MRWaitingOnApiRequest object:nil];
             [self requestApi];
-            
-            // trigger status timer startup (dependent on user defaults)
-            [self notificationsEnabledChanged:nil];
         }
         else {
             DDLogVerbose(@"stored account found but unreachable, using offline data");
             [[NSNotificationCenter defaultCenter] postNotificationName:MRHubbyIsOffline object:nil];
         }
     }
+    
+    if ([[self reachability] isReachable])
+        [self notificationsEnabledChanged:nil]; // trigger status timer startup (dependent on user defaults)
     
     // observer for user deauthorisation
     [[NSNotificationCenter defaultCenter] addObserver:self
