@@ -577,9 +577,14 @@ enum {
         [_statusTimer fire];
     }
     else {
-        DDLogVerbose(@"stopping status timer");
         _currentStatus = nil;
-        [_statusTimer invalidate];
+        if (_statusTimer) {
+            DDLogVerbose(@"notifications pref changed, stopping status timer");
+            [_statusTimer invalidate];
+        }
+        else {
+            DDLogVerbose(@"user defaults notification pref off, not starting timer");
+        }
     }
 }
 
