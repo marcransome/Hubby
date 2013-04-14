@@ -653,7 +653,7 @@ enum {
         return YES;
     
     // enable these items based on current reachability status
-    if ([[self reachability] isReachable]) {    
+    if ([[self reachability] isReachable] && hubbyIsAuthorised) {
         if ([item action] == @selector(showCreateRepository:))
             return YES;
     }
