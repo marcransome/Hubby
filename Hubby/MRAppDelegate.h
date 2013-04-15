@@ -34,6 +34,7 @@
 @property (weak) IBOutlet NSMenuItem *createRepoMenuItem;
 @property (weak) IBOutlet NSMenuItem *publicReposMenuItem;
 @property (weak) IBOutlet NSMenu *publicReposMenu;
+@property (strong) NSTimer *apiTimer;
 @property (strong) NSTimer *statusTimer;
 @property (strong) NSTimer *publicRepoTimer;
 @property (assign) BOOL waitingOnLastRequest;
@@ -57,6 +58,8 @@
 - (IBAction)openRepo:(id)sender;
 
 /* api support methods */
+- (void)startApiTimer;
+- (void)startRepoTimer;
 - (void)requestApi;
 - (void)requestRepos;
 - (void)userDidRevokeAccess;

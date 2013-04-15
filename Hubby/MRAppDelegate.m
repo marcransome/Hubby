@@ -41,6 +41,7 @@ NSString* const MRHubbyIsOffline = @"MRHubbyIsOffline";
 NSString* const MRAccountAccessFailed = @"MRAccountAccessFailed";
 
 static BOOL hubbyIsAuthorised = NO;
+static BOOL firstTimeAuthorisation = NO;
 
 #pragma mark Logging
 
@@ -100,7 +101,9 @@ enum {
                                                       // so we must test for the existence of NXOAuth2AccountStoreNewAccountUserInfoKey
                                                       if ([[notification userInfo] objectForKey:@"NXOAuth2AccountStoreNewAccountUserInfoKey"]) {
                                                           hubbyIsAuthorised = YES;
-                                                          [self requestApi];
+                                                          firstTimeAuthorisation = YES;
+                                                          [self startApiTimer];
+                                                          [self startRepoTimer];
                                                       }
                                                   }];
     
@@ -144,7 +147,8 @@ enum {
         if ([[self reachability] isReachable]) {
             DDLogVerbose(@"stored account found and reachable, sending api request");
             [[NSNotificationCenter defaultCenter] postNotificationName:MRWaitingOnApiRequest object:nil];
-            [self requestApi];
+            [self startApiTimer];
+            [self startRepoTimer];
         }
         else {
             DDLogVerbose(@"stored account found but unreachable, using offline data");
@@ -163,7 +167,13 @@ enum {
     // menu item setup
     _hubbyMenuItem = [[NSStatusBar systemStatusBar] statusItemWithLength:NSSquareStatusItemLength];
     
-    NSImage *menuItemImage = [NSImage imageNamed:@"menu_icon.tiff"];
+    NSImage *menuItemImage;
+    
+    if ([[self reachability] isReachable])
+        menuItemImage = [NSImage imageNamed:@"menu_icon.tiff"];
+    else
+        menuItemImage = [NSImage imageNamed:@"menu_offline.tiff"];
+    
     [menuItemImage setSize:NSMakeSize(18, 18)];
     
     NSImage *menuItemHighlight = [NSImage imageNamed:@"menu_highlight.tiff"];
@@ -203,25 +213,29 @@ enum {
 - (void)pollGithub
 {
     // json request for status api
-    NSURL *apiUrl = [NSURL URLWithString:@"https://status.github.com/api.json"];
-    NSURLRequest *apiRequest = [NSURLRequest requestWithURL:apiUrl];
-    NSError *apiError = nil;
-    NSHTTPURLResponse *apiResponse = nil;
-    NSData* apiJsonData = [NSURLConnection sendSynchronousRequest:apiRequest returningResponse:&apiResponse error:&apiError];
+    NSURL *statusApiUrl = [NSURL URLWithString:@"https://status.github.com/api.json"];
+    NSURLRequest *statusApiRequest = [NSURLRequest requestWithURL:statusApiUrl];
+    NSError *statusApiError = nil;
+    NSHTTPURLResponse *statusApiResponse = nil;
+    NSData* statusApiJsonData = [NSURLConnection sendSynchronousRequest:statusApiRequest returningResponse:&statusApiResponse error:&statusApiError];
     
-    if (apiJsonData == nil || [apiResponse statusCode] != 200)
+    if (statusApiJsonData == nil || [statusApiResponse statusCode] != 200)
     {
-        if (apiError)
-            DDLogError(@"error for status api request: %@ (%@ %li)", [apiError domain], [apiError localizedDescription], [apiError code]);
+        if (statusApiError) {
+            if ([statusApiError code] == NSURLErrorNotConnectedToInternet)
+                DDLogError(@"error for status api request (offline)");
+            else
+                DDLogError(@"error for status api request: %@ (%@ %li)", [statusApiError domain], [statusApiError localizedDescription], [statusApiError code]);
+        }
         else
-            DDLogError(@"no data received or http error for status api request (status code is %li)", [apiResponse statusCode]);
+            DDLogError(@"no data received or http error for status api request (status code is %li)", [statusApiResponse statusCode]);
         
         [self performSelectorOnMainThread:@selector(pollErrored) withObject:nil waitUntilDone:NO];
         
         return;
     }
     
-    NSDictionary *apiResultsDictionary = [apiJsonData objectFromJSONData];
+    NSDictionary *apiResultsDictionary = [statusApiJsonData objectFromJSONData];
     NSURL *statusUrl = [NSURL URLWithString:[apiResultsDictionary objectForKey:@"status_url"]];
     NSURL *lastMessageUrl = [NSURL URLWithString:[apiResultsDictionary objectForKey:@"last_message_url"]];
         
@@ -409,41 +423,69 @@ enum {
 #pragma mark -
 #pragma mark API Support Methods
 
+- (void)startApiTimer
+{
+    DDLogVerbose(@"starting api timer");
+    
+    [self setApiTimer:[NSTimer scheduledTimerWithTimeInterval:60.0
+                                                       target:self
+                                                     selector:@selector(requestApi)
+                                                     userInfo:nil
+                                                      repeats:YES]];
+    [[self apiTimer] fire];
+}
+
 - (void)requestApi
 {
+    DDLogVerbose(@"performing api request");
+    
     [NXOAuth2Request performMethod:@"GET" onResource:[NSURL URLWithString:@"https://api.github.com/user"] usingParameters:nil withAccount:[[[NXOAuth2AccountStore sharedStore] accountsWithAccountType:@"GitHub"] lastObject] sendProgressHandler:^(unsigned long long bytesSend, unsigned long long bytesTotal) {
         // silent
     } responseHandler:^(NSURLResponse *response, NSData *responseData, NSError *error) {
         NSDictionary *results = [responseData objectFromJSONData];
 
         if (error) {
-            
-            if ([error code] == 401 || [error code] == 403)
-            {
+            // if the first api request after authorisation fails then we
+            // are unable to retrieve new user data, and none will exist locally,
+            // so we deauthorise, invalidate active timers and inform the user
+            if (firstTimeAuthorisation) {
+                firstTimeAuthorisation = NO;
                 [self userDidRevokeAccess];
                 return;
             }
-            else {
-                 // TODO handle other error types
-                DDLogError(@"an unhandled api request error occured (%li: %@)", [error code], [error description]);
+            else if ([error code] == 401 || [error code] == 403) {
+                [self userDidRevokeAccess];
                 return;
             }
+            else if ([error code] == NSURLErrorNotConnectedToInternet) {
+                DDLogError(@"error for api request (offline)");
+                return;
+            }
+            else {
+                DDLogError(@"error for api request: %@ (%@ %li)", [error domain], [error localizedDescription], [error code]);
+                return;
+            }
+
         }
         else {
             hubbyIsAuthorised = YES;
+            firstTimeAuthorisation = NO;
             
             [[NSNotificationCenter defaultCenter] postNotificationName:MRAccountAuthorised object:results];
-            
-            DDLogVerbose(@"starting public repos timer");
-            
-            [self setPublicRepoTimer:[NSTimer scheduledTimerWithTimeInterval:60.0
-                                                                      target:self
-                                                                    selector:@selector(requestRepos)
-                                                                    userInfo:nil
-                                                                     repeats:YES]];
-            [[self publicRepoTimer] fire];
         }
     }];
+}
+
+- (void)startRepoTimer
+{
+    DDLogVerbose(@"starting public repos timer");
+    
+    [self setPublicRepoTimer:[NSTimer scheduledTimerWithTimeInterval:60.0
+                                                       target:self
+                                                     selector:@selector(requestRepos)
+                                                     userInfo:nil
+                                                      repeats:YES]];
+    [[self publicRepoTimer] fire];
 }
 
 - (void)requestRepos
@@ -456,15 +498,17 @@ enum {
         NSArray *results = [responseData objectFromJSONData];
         
         if (error) {
-            
-            if ([error code] == 401 || [error code] == 403)
-            {
+            if ([error code] == 401 || [error code] == 403) {
                 [self userDidRevokeAccess];
                 return;
             }
+            else if ([error code] == NSURLErrorNotConnectedToInternet) {
+                DDLogError(@"error for repos request (offline)");
+                return;
+            }
             else {
-                // TODO handle other error types
-                DDLogError(@"an unhandled repos request error occured (%li: %@)", [error code], [error description]);
+                DDLogError(@"error for repos request: %@ (%@ %li)", [error domain], [error localizedDescription], [error code]);
+                return;
             }
         }
         else {
@@ -499,7 +543,7 @@ enum {
     [[NSNotificationCenter defaultCenter] postNotificationName:MRAccountDeauthorised object:nil];
     
     NSAlert *alert = [[NSAlert alloc] init];
-    [alert setMessageText:@"Hubby was unable to access GitHub.  Please authenticate again."];
+    [alert setMessageText:@"Hubby was unable to access GitHub.  Please authorise again."];
     [alert runModal];
 }
 
@@ -549,6 +593,12 @@ enum {
 
 - (void)timerIntervalChanged:(NSNotification *)notification
 {
+    if (![[self reachability] isReachable])
+    {
+        DDLogVerbose(@"ignoring timer interval change while unreachable");
+        return;
+    }
+    
     [_statusTimer invalidate];
     
     NSInteger repeatIntervalInSeconds = [[NSUserDefaults standardUserDefaults] integerForKey:@"RepeatInterval"] * 60;
@@ -563,6 +613,12 @@ enum {
 
 - (void)notificationsEnabledChanged:(NSNotification *)notification
 {
+    if (![[self reachability] isReachable])
+    {
+        DDLogVerbose(@"ignoring notifications pref change while unreachable");
+        return;
+    }
+    
     if ([[NSUserDefaults standardUserDefaults] boolForKey:@"EnableNotifications"]) {
         NSTimeInterval repeatIntervalInSeconds = [[NSUserDefaults standardUserDefaults] integerForKey:@"RepeatInterval"] * 60.0;
         
@@ -576,14 +632,12 @@ enum {
         
         [_statusTimer fire];
     }
-    else {
+    else { // unreachable
         _currentStatus = nil;
         if (_statusTimer) {
-            DDLogVerbose(@"notifications pref changed, stopping status timer");
+            DDLogVerbose(@"stopping status timer");
             [_statusTimer invalidate];
-        }
-        else {
-            DDLogVerbose(@"user defaults notification pref off, not starting timer");
+            _statusTimer = nil;
         }
     }
 }
@@ -594,21 +648,38 @@ enum {
     
     if (status == NotReachable) {
         DDLogVerbose(@"no longer reachable, invalidating timers");
+        [[self apiTimer] invalidate];
         [[self statusTimer] invalidate];
         [[self publicRepoTimer] invalidate];
+        
+        // TODO change status menu icon to indicate unreachable status        
+        NSImage *offlineMenuIcon = [[NSBundle mainBundle] imageForResource:@"menu_offline.tiff"];
+        [offlineMenuIcon setSize:NSMakeSize(18, 18)];
+        
+        [_hubbyMenuItem setImage:offlineMenuIcon];
     }
     else {
-        DDLogVerbose(@"now reachable, sending api request");
-        [[NSNotificationCenter defaultCenter] postNotificationName:MRWaitingOnApiRequest object:nil];
-        [self requestApi];
+        // restart api and repo timers
+        if ([[[NXOAuth2AccountStore sharedStore] accountsWithAccountType:@"GitHub"] lastObject]) {
+            [self startApiTimer];
+            [self startRepoTimer];
+        }
         
-        // trigger status timer startup (dependent on user defaults)
+        // restart status timer
         [self notificationsEnabledChanged:nil];
+        
+        // TODO reset status menu icon to indicate reachable status
+        NSImage *offlineMenuIcon = [[NSBundle mainBundle] imageForResource:@"menu_icon.tiff"];
+        [offlineMenuIcon setSize:NSMakeSize(18, 18)];
+        
+        [_hubbyMenuItem setImage:offlineMenuIcon];
     }
 }
 
 - (void)accountAuthorisedChanged:(NSNotification *)notification
 {
+    DDLogVerbose(@"deauthorising");
+    
     hubbyIsAuthorised = NO;
     
     // update public repos menu item
@@ -617,6 +688,16 @@ enum {
     [[self publicRepoTimer] invalidate];
     
     DDLogVerbose(@"stopped public repos timer");
+    
+    [[self apiTimer] invalidate];
+    
+    DDLogVerbose(@"stopped api timer");
+    
+    NSFileManager *manager = [NSFileManager defaultManager];
+    [manager removeItemAtURL:[[MRAppDelegate hubbySupportDir] URLByAppendingPathComponent:@"user.json"] error:nil];
+    [manager removeItemAtURL:[[MRAppDelegate hubbySupportDir] URLByAppendingPathComponent:@"avatar.tiff"] error:nil];
+    
+    DDLogVerbose(@"removed local user data");
 }
 
 #pragma mark -
