@@ -49,7 +49,7 @@
 				<int key="NSWindowBacking">2</int>
 				<string key="NSWindowRect">{{196, 240}, {477, 370}}</string>
 				<int key="NSWTFlags">540540928</int>
-				<string key="NSWindowTitle">Create repository</string>
+				<string key="NSWindowTitle">New repository</string>
 				<string key="NSWindowClass">NSWindow</string>
 				<nil key="NSViewClass"/>
 				<nil key="NSUserInterfaceItemIdentifier"/>
@@ -92,6 +92,7 @@
 							<string key="NSFrame">{{382, 13}, {81, 32}}</string>
 							<reference key="NSSuperview" ref="1006"/>
 							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="1038277604">
@@ -220,6 +221,7 @@
 							<string key="NSFrame">{{13, 39}, {451, 282}}</string>
 							<reference key="NSSuperview" ref="1006"/>
 							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView" ref="93529757"/>
 							<string key="NSReuseIdentifierKey">_NS:9</string>
 							<array class="NSMutableArray" key="NSTabViewItems">
 								<object class="NSTabViewItem" id="569260898">
@@ -450,7 +452,7 @@
 												<string key="NSFrame">{{232, 10}, {135, 26}}</string>
 												<reference key="NSSuperview" ref="93529757"/>
 												<reference key="NSWindow"/>
-												<reference key="NSNextKeyView" ref="107439849"/>
+												<reference key="NSNextKeyView"/>
 												<string key="NSReuseIdentifierKey">_NS:9</string>
 												<bool key="NSEnabled">YES</bool>
 												<object class="NSPopUpButtonCell" key="NSCell" id="31201769">
