@@ -163,6 +163,8 @@ extern int ddLogLevel;
     [[self progressIndicator] stopAnimation:nil];
     [[self progressIndicator] setHidden:YES];
     [[self createButton] setEnabled:YES];
+    
+    [self close];
 }
 
 #pragma mark -
