@@ -45,6 +45,7 @@ extern int ddLogLevel;
 @property (weak) IBOutlet NSProgressIndicator *progressIndicator;
 @property (weak) IBOutlet NSButton *createButton;
 @property (weak) IBOutlet NSPopUpButton *gitignorePopUp;
+@property (weak) IBOutlet NSButton *closeButton;
 @property (strong) NSURLConnection *urlConnection;
 @property (strong) NSMutableData *responseData;
 
@@ -95,6 +96,11 @@ extern int ddLogLevel;
             [[self gitignorePopUp] addItemWithTitle:language];
         }
     }
+    
+    // connect close button for cancelling requests
+    [self setCloseButton:[[self window] standardWindowButton:NSWindowCloseButton]];
+    [[self closeButton] setTarget:self];
+    [[self closeButton] setAction:@selector(cancelRequest:)];
 }
 
 #pragma mark -
