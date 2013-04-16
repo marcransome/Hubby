@@ -22,6 +22,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface MRCreateRepositoryWindowController : NSWindowController
+@interface MRCreateRepositoryWindowController : NSWindowController <NSURLConnectionDelegate, NSURLConnectionDataDelegate>
 
 @end
