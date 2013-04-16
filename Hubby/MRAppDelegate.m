@@ -42,6 +42,7 @@ NSString* const MRAccountAccessFailed = @"MRAccountAccessFailed";
 
 static BOOL hubbyIsAuthorised = NO;
 static BOOL firstTimeAuthorisation = NO;
+static BOOL accessRevoked = NO;
 
 #pragma mark Logging
 
@@ -102,6 +103,7 @@ enum {
                                                       if ([[notification userInfo] objectForKey:@"NXOAuth2AccountStoreNewAccountUserInfoKey"]) {
                                                           hubbyIsAuthorised = YES;
                                                           firstTimeAuthorisation = YES;
+                                                          accessRevoked = NO;
                                                           [self startApiTimer];
                                                           [self startRepoTimer];
                                                       }
@@ -532,6 +534,14 @@ enum {
 
 - (void)userDidRevokeAccess
 {
+    // if multiple requests fail (e.g. api request and public repo request) due to access
+    // revocation then this method will be triggered multiple times, so we protect against
+    // unnecessary execution by recording revocation status and reset this when authorising
+    if (accessRevoked)
+        return;
+    
+    accessRevoked = YES;
+    
     DDLogError(@"401/403 error: no longer authorised, removing accounts");
     
     for (NXOAuth2Account *account in [[NXOAuth2AccountStore sharedStore] accountsWithAccountType:@"GitHub"]) {
