@@ -82,7 +82,7 @@ extern int ddLogLevel;
     
     // populate .gitignore pop-up
     NSURL *gitignoreFile = [[NSBundle mainBundle] URLForResource:@"gitignore" withExtension:@"txt"];
-    NSString *fileContents = [[NSString alloc] initWithContentsOfURL:gitignoreFile encoding:nil error:nil];
+    NSString *fileContents = [[NSString alloc] initWithContentsOfURL:gitignoreFile usedEncoding:nil error:NULL];
     for (NSString *language in [fileContents componentsSeparatedByString:@"\n"]) {
         if ([language length] > 0) {
             [[self gitignorePopUp] addItemWithTitle:language];
