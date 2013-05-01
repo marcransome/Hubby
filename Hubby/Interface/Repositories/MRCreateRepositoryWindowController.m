@@ -80,24 +80,16 @@ extern int ddLogLevel;
 {
     [super windowDidLoad];
     
-    // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
-    NSString *gitignoreFile = [[NSBundle mainBundle] pathForResource:@"gitignore" ofType:@"txt"];
-
-    NSStringEncoding encoding;
-    NSError *error;
-    NSString *fileContents = [[NSString alloc] initWithContentsOfFile:gitignoreFile
-                                                          usedEncoding:&encoding
-                                                                 error:&error];
-    
-    // TODO error checks
-    
+    // populate .gitignore pop-up
+    NSURL *gitignoreFile = [[NSBundle mainBundle] URLForResource:@"gitignore" withExtension:@"txt"];
+    NSString *fileContents = [[NSString alloc] initWithContentsOfURL:gitignoreFile encoding:nil error:nil];
     for (NSString *language in [fileContents componentsSeparatedByString:@"\n"]) {
         if ([language length] > 0) {
             [[self gitignorePopUp] addItemWithTitle:language];
         }
     }
     
-    // connect close button for cancelling requests
+    // ensure that close control cancels a pending request
     [self setCloseButton:[[self window] standardWindowButton:NSWindowCloseButton]];
     [[self closeButton] setTarget:self];
     [[self closeButton] setAction:@selector(cancelRequest:)];
