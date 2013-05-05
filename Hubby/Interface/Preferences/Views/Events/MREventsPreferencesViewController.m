@@ -10,6 +10,7 @@
 
 #pragma mark Externals
 extern NSString* const MRNotificationsEnabledChanged;
+extern NSString* const MRRepeatIntervalChanged;
 
 #pragma mark -
 #pragma mark Interface
@@ -49,7 +50,7 @@ extern NSString* const MRNotificationsEnabledChanged;
 
 - (IBAction)repeatIntervalChanged:(id)sender
 {
-    NSNotification *repeatIntervalChanged = [NSNotification notificationWithName:@"RepeatIntervalChanged" object:nil];
+    NSNotification *repeatIntervalChanged = [NSNotification notificationWithName:MRRepeatIntervalChanged object:nil];
     [[NSNotificationCenter defaultCenter] postNotification:repeatIntervalChanged];
 }
 

@@ -39,6 +39,7 @@ NSString* const MRUserDidDeauthorise = @"MRUserDidDeauthorise";
 NSString* const MRNotificationsEnabledChanged = @"MRNotificationsEnabledChanged";
 NSString* const MRHubbyIsOffline = @"MRHubbyIsOffline";
 NSString* const MRAccountAccessFailed = @"MRAccountAccessFailed";
+NSString* const MRRepeatIntervalChanged = @"RepeatIntervalChanged";
 
 static BOOL hubbyIsAuthorised = NO;
 static BOOL firstTimeAuthorisation = NO;
@@ -188,13 +189,12 @@ enum {
     
     _waitingOnLastRequest = NO;
 
-    // observer for repeat interval preference
+    // observer for repeat interval and notifications preferences
     [[NSNotificationCenter defaultCenter] addObserver:self
                                          selector:@selector(timerIntervalChanged:)
-                                             name:@"RepeatIntervalChanged"
+                                             name:MRRepeatIntervalChanged
                                            object:nil];
     
-    // observer for repeat interval preference
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(notificationsEnabledChanged:)
                                                  name:MRNotificationsEnabledChanged
@@ -534,9 +534,9 @@ enum {
 
 - (void)userDidRevokeAccess
 {
-    // if multiple requests fail (e.g. api request and public repo request) due to access
-    // revocation then this method will be triggered multiple times, so we protect against
-    // unnecessary execution by recording revocation status and reset this when authorising
+    // if multiple requests fail in succession (e.g. api request and public repo request)
+    // due to access revocation then this method will be triggered multiple times, we protect
+    // against multiple calls by recording revocation status (and reset this when authorising)
     if (accessRevoked)
         return;
     

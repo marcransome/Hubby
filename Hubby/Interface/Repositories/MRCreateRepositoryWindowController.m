@@ -89,7 +89,7 @@ extern int ddLogLevel;
         }
     }
     
-    // ensure that close control cancels a pending request
+    // ensure that close window control cancels pending request
     [self setCloseButton:[[self window] standardWindowButton:NSWindowCloseButton]];
     [[self closeButton] setTarget:self];
     [[self closeButton] setAction:@selector(cancelRequest:)];
