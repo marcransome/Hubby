@@ -1,5 +1,5 @@
 #Hubby [![Build Status](https://travis-ci.org/marcransome/Hubby.png)](https://travis-ci.org/marcransome/Hubby)
-Hubby is your friendly GitHub companion app for Mac.  Hubby lives in your menu bar and makes it easy to take control of your GitHub repositories and more.  Hubby can also notify you when the little fix-it elves at [GitHub](https://www.github.com) are busy fixing something that [broke](https://status.github.com/).  Be it a major meltdown or a minor hiccup, Hubby will politely inform you that Something-Is-Going-On™.  Hubby won't make the world a better place, but it will keep you in the know.
+Hubby lives in your menu bar and makes it easy to take control of your GitHub repositories.  Hubby can also notify you when the little fix-it elves at [GitHub](https://www.github.com) are busy fixing something that [broke](https://status.github.com/).  Be it a major meltdown or a minor hiccup, Hubby will politely inform you that Something-Is-Going-On™.  Hubby won't make the world a better place, but it will keep you in the know.
 
 ##Acknowledgements
 Hubby makes use of the following open source libraries and frameworks:
