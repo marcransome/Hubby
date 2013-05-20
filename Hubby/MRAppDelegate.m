@@ -42,7 +42,7 @@ NSString* const MRAccountAccessFailed = @"MRAccountAccessFailed";
 NSString* const MRRepeatIntervalChanged = @"RepeatIntervalChanged";
 
 static BOOL hubbyIsAuthorised = NO;
-static BOOL firstTimeAuthorisation = NO;
+static BOOL firstTimeAuthorisation = YES;
 static BOOL accessRevoked = NO;
 
 #pragma mark Logging
