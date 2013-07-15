@@ -5,7 +5,7 @@
 	<key>NotificationsFor</key>
 	<integer>0</integer>
 	<key>RepeatInterval</key>
-	<integer>5</integer>
+	<integer>10</integer>
 	<key>DefaultPreferenceViewController</key>
 	<string>MRGeneralPreferencesViewController</string>
 	<key>ServiceRestoredNotification</key>
@@ -13,7 +13,7 @@
 	<key>EnableNotifications</key>
 	<true/>
 	<key>OpenAfterCreateRepo</key>
-	<false/>
+	<true/>
 	<key>CopyAfterCreateRepo</key>
 	<false/>
 	<key>OpenAfterCreateGist</key>

@@ -409,12 +409,12 @@ enum {
 
 - (IBAction)showCreateRepository:(id)sender
 {
-    if (!_createRepoWindow) {
-        _createRepoWindow = [[MRCreateRepositoryWindowController alloc] initWithWindowNibName:@"MRCreateRepositoryWindow"];
+    if (!_createRepoWindowController) {
+        _createRepoWindowController = [[MRCreateRepositoryWindowController alloc] initWithWindowNibName:@"MRCreateRepositoryWindow"];
     }
     
     [NSApp activateIgnoringOtherApps: YES];
-    [[_createRepoWindow window] makeKeyAndOrderFront:nil];
+    [[_createRepoWindowController window] makeKeyAndOrderFront:nil];
 }
 
 - (void)openRepo:(id)sender
@@ -642,7 +642,7 @@ enum {
         
         [_statusTimer fire];
     }
-    else { // unreachable
+    else {
         _currentStatus = nil;
         if (_statusTimer) {
             DDLogVerbose(@"stopping status timer");

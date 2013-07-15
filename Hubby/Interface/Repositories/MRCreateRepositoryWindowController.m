@@ -239,15 +239,13 @@ extern int ddLogLevel;
         return;
     }
     else {
-        NSLog(@"%@", [[NSString alloc] initWithData:[self responseData] encoding:NSUTF8StringEncoding]);
-
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"openAfterCreateRepo"])
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"OpenAfterCreateRepo"])
         {
             NSURL *repoURL = [NSURL URLWithString:[[[self responseData] objectFromJSONData] objectForKey:@"html_url"]];
             [[NSWorkspace sharedWorkspace] openURL:repoURL];
         }
 
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"copyAfterCreateRepo"])
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"CopyAfterCreateRepo"])
         {
             NSPasteboard *pasteboard = [NSPasteboard generalPasteboard];
             [pasteboard clearContents];

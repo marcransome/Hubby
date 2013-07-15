@@ -12,7 +12,7 @@
 		192D5A7B16F31C6400E4DF19 /* MREventsPreferencesView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 192D5A7916F31C6400E4DF19 /* MREventsPreferencesView.xib */; };
 		196946C21708A95A00983433 /* MRCreateRepositoryWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 196946BF1708A95A00983433 /* MRCreateRepositoryWindow.xib */; };
 		196946C31708A95A00983433 /* MRCreateRepositoryWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 196946C11708A95A00983433 /* MRCreateRepositoryWindowController.m */; };
-		196B543B16F520FE000DA841 /* menu_highlight.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 196B543A16F520FE000DA841 /* menu_highlight.tiff */; };
+		196B543B16F520FE000DA841 /* menu_offline.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 196B543A16F520FE000DA841 /* menu_offline.tiff */; };
 		196B543D16F5EE41000DA841 /* menu_icon.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 196B543C16F5EE41000DA841 /* menu_icon.tiff */; };
 		196B544216F71277000DA841 /* MRAccountPreferencesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 196B544016F71277000DA841 /* MRAccountPreferencesViewController.m */; };
 		196B544316F71277000DA841 /* MRAccountPreferencesView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 196B544116F71277000DA841 /* MRAccountPreferencesView.xib */; };
@@ -61,7 +61,7 @@
 		196946BF1708A95A00983433 /* MRCreateRepositoryWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = MRCreateRepositoryWindow.xib; path = Interface/Repositories/MRCreateRepositoryWindow.xib; sourceTree = "<group>"; };
 		196946C01708A95A00983433 /* MRCreateRepositoryWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MRCreateRepositoryWindowController.h; path = Interface/Repositories/MRCreateRepositoryWindowController.h; sourceTree = "<group>"; };
 		196946C11708A95A00983433 /* MRCreateRepositoryWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MRCreateRepositoryWindowController.m; path = Interface/Repositories/MRCreateRepositoryWindowController.m; sourceTree = "<group>"; };
-		196B543A16F520FE000DA841 /* menu_highlight.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = menu_highlight.tiff; sourceTree = "<group>"; };
+		196B543A16F520FE000DA841 /* menu_offline.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = menu_offline.tiff; sourceTree = "<group>"; };
 		196B543C16F5EE41000DA841 /* menu_icon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = menu_icon.tiff; sourceTree = "<group>"; };
 		196B543F16F71277000DA841 /* MRAccountPreferencesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MRAccountPreferencesViewController.h; path = Interface/Preferences/Views/Account/MRAccountPreferencesViewController.h; sourceTree = "<group>"; };
 		196B544016F71277000DA841 /* MRAccountPreferencesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MRAccountPreferencesViewController.m; path = Interface/Preferences/Views/Account/MRAccountPreferencesViewController.m; sourceTree = "<group>"; };
@@ -169,7 +169,7 @@
 			isa = PBXGroup;
 			children = (
 				196B543C16F5EE41000DA841 /* menu_icon.tiff */,
-				196B543A16F520FE000DA841 /* menu_highlight.tiff */,
+				196B543A16F520FE000DA841 /* menu_offline.tiff */,
 			);
 			name = "Status Images";
 			sourceTree = "<group>";
@@ -375,7 +375,7 @@
 				192D5A7016F31BAD00E4DF19 /* events.icns in Resources */,
 				192D5A7B16F31C6400E4DF19 /* MREventsPreferencesView.xib in Resources */,
 				19C145AC16F3E689007AEC14 /* hubby.pem in Resources */,
-				196B543B16F520FE000DA841 /* menu_highlight.tiff in Resources */,
+				196B543B16F520FE000DA841 /* menu_offline.tiff in Resources */,
 				196B543D16F5EE41000DA841 /* menu_icon.tiff in Resources */,
 				196B544316F71277000DA841 /* MRAccountPreferencesView.xib in Resources */,
 				198E251A16FE7BAA00B4423F /* Octocat.png in Resources */,

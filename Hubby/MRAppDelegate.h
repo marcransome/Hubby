@@ -40,7 +40,7 @@
 @property (assign) BOOL waitingOnLastRequest;
 @property (strong) MRPreferencesWindowController *prefWindowController;
 @property (strong) NSString *currentStatus;
-@property (strong) MRCreateRepositoryWindowController *createRepoWindow;
+@property (strong) MRCreateRepositoryWindowController *createRepoWindowController;
 @property (strong) Reachability *reachability;
 
 /* status polling */
