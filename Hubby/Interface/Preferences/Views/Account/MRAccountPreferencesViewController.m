@@ -127,12 +127,15 @@ extern int ddLogLevel;
 {
     NSDictionary *userInfo = [notification object];
     
-    if ([userInfo objectForKey:@"name"])
+    NSString *user = [userInfo objectForKey:@"name"];
+    NSString *location = [userInfo objectForKey:@"location"];
+    
+    if (![user isEqualTo:[NSNull null]] && user.length != 0)
         [[self userInfoName] setStringValue:[NSString stringWithFormat:@"Name: %@", [userInfo objectForKey:@"name"]]];
     else
         [[self userInfoName] setStringValue:[NSString stringWithFormat:@"Name: none"]];
     
-    if ([userInfo objectForKey:@"location"])
+    if (![location isEqualTo:[NSNull null]] && location.length != 0)
         [[self userInfoLocation] setStringValue:[NSString stringWithFormat:@"Location: %@", [userInfo objectForKey:@"location"]]];
     else
         [[self userInfoLocation] setStringValue:[NSString stringWithFormat:@"Location: none"]];
