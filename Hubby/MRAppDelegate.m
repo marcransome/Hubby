@@ -429,7 +429,7 @@ enum {
 {
     DDLogVerbose(@"starting api timer");
     
-    [self setApiTimer:[NSTimer scheduledTimerWithTimeInterval:60.0
+    [self setApiTimer:[NSTimer scheduledTimerWithTimeInterval:600.0
                                                        target:self
                                                      selector:@selector(requestApi)
                                                      userInfo:nil
@@ -482,7 +482,7 @@ enum {
 {
     DDLogVerbose(@"starting public repos timer");
     
-    [self setPublicRepoTimer:[NSTimer scheduledTimerWithTimeInterval:60.0
+    [self setPublicRepoTimer:[NSTimer scheduledTimerWithTimeInterval:600.0
                                                        target:self
                                                      selector:@selector(requestRepos)
                                                      userInfo:nil
