@@ -100,14 +100,14 @@
 					<object class="NSMenuItem" id="20137249">
 						<reference key="NSMenu" ref="115110323"/>
 						<bool key="NSIsDisabled">YES</bool>
-						<string key="NSTitle">Public repositories</string>
+						<string key="NSTitle">Repositories</string>
 						<string key="NSKeyEquiv"/>
 						<int key="NSMnemonicLoc">2147483647</int>
 						<reference key="NSOnImage" ref="950188517"/>
 						<reference key="NSMixedImage" ref="671969266"/>
 						<string key="NSAction">submenuAction:</string>
 						<object class="NSMenu" key="NSSubmenu" id="255729919">
-							<string key="NSTitle">Public repositories</string>
+							<string key="NSTitle">Repositories</string>
 							<array class="NSMutableArray" key="NSMenuItems"/>
 						</object>
 					</object>

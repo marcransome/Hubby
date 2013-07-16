@@ -47,7 +47,7 @@ static BOOL accessRevoked = NO;
 
 #pragma mark Logging
 
-int ddLogLevel = LOG_LEVEL_VERBOSE;
+int ddLogLevel = LOG_LEVEL_ERROR;
 
 #pragma mark Enumerations
 
