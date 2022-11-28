@@ -15,4 +15,4 @@ Many thanks to their authors for their great work.
 Hubby is free software and you are welcome to modify or redistribute it under certain conditions. See the [GNU General Public License](http://www.gnu.org/licenses/gpl.html) for more details.
 
 ## Contact
-Email me at [marc.ransome@fidgetbox.co.uk](mailto:marc.ransome@fidgetbox.co.uk) or tweet [@marcransome](http://www.twitter.com/marcransome).
+Email me at [marc.ransome@fidgetbox.co.uk](mailto:marc.ransome@fidgetbox.co.uk) or [create an issue](https://github.com/marcransome/Hubby/issues).
